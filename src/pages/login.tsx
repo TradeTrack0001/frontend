@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [login, setLogin] = useState(true);
+  
   const [mainScreen, setMainScreen] = useState(true);
   const navigate = useNavigate();
 
