@@ -12,9 +12,6 @@ export default function Sidebar() {
 
   return (
     <div className="w-1/4 bg-blue-700 text-white p-5 min-h-screen">
-      <button onClick={handleLogout} className="mb-2 cursor-pointer text-white">
-        Logout
-      </button>
       <h1 className="mb-4 space-y-2 text-xl">TradeTrack</h1>
       <ul className="flex flex-col space-y-2">
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
@@ -24,10 +21,10 @@ export default function Sidebar() {
           <Link to="/inventory">Inventory</Link>
         </li>
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
-          <Link to="/checkout">Checkout</Link>
+          <Link to="/checkout">Check out</Link>
         </li>
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
-          <Link to="/checkin">Checkin</Link>
+          <Link to="/checkin">Check in</Link>
         </li>
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
           <Link to="/orders">Orders</Link>
@@ -35,8 +32,8 @@ export default function Sidebar() {
         
       </ul>
       <div className='mt-auto'>
-      <button onClick={handleLogout} className="mb-2 p-2 cursor-pointer text-white bg-red-700 rounded-md">
-        Logout
+      <button onClick={handleLogout} className="mb-2 p-2 cursor-pointer text-white bg-red-800 rounded-md">
+        LOG OUT
       </button>
       </div>
     </div>
