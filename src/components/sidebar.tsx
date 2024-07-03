@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Sidebar() {
   const navigate = useNavigate();
 
-  const handleBack = () => {
+  const handleLogout = () => {
     navigate("/"); // Navigate back to the login page
   };
 
@@ -12,10 +12,10 @@ export default function Sidebar() {
 
   return (
     <div className="w-1/4 bg-blue-700 text-white p-5 min-h-screen">
-      <button onClick={handleBack} className="mb-2 cursor-pointer text-white">
-        ← Back
+      <button onClick={handleLogout} className="mb-2 cursor-pointer text-white">
+        Logout
       </button>
-      <h1 className="text-center mb-4">TradeTrack</h1>
+      <h1 className="mb-4 space-y-2 text-xl">TradeTrack</h1>
       <ul className="flex flex-col space-y-2">
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
           <Link to="/profile">Profile</Link>
@@ -30,9 +30,15 @@ export default function Sidebar() {
           <Link to="/checkin">Checkin</Link>
         </li>
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
-          <Link to="/settings">Settings</Link>
+          <Link to="/orders">Orders</Link>
         </li>
+        
       </ul>
+      <div className='mt-auto'>
+      <button onClick={handleLogout} className="mb-2 p-2 cursor-pointer text-white bg-red-700 rounded-md">
+        Logout
+      </button>
+      </div>
     </div>
   );
 };
