@@ -1,18 +1,25 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [login, setLogin] = useState(true);
+  const [mainScreen, setMainScreen] = useState(true);
+  const navigate = useNavigate();
 
   const handleRegisterButton = () => {
-    setLogin(false);
+    setMainScreen(false);
   };
-  const handleLoginButton = () => {
-    setLogin(true);
+  const handleMainScreen = () => {
+    setMainScreen(true);
+  }
+  const handleLoginButton = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate("/inventory");
   };
 
   const BackArrow = () => {
     return (
-      <button onClick={handleLoginButton} className="mb-2 cursor-pointer text-blue-500">
+      <button onClick={handleMainScreen} className="mb-2 cursor-pointer text-blue-500">
         ← Back
       </button>
     );
@@ -24,10 +31,10 @@ export default function Login() {
       <div className="absolute inset-0 w-1/2 bg-blue-300 z-0 right-0"></div>
       <div className="relative w-full max-w-md p-8 bg-white shadow-lg rounded-lg z-10 m-auto">
           <h1 className="text-4xl mb-2 text-center">
-            {login ? "Login" : "Register"}
+            {mainScreen ? "Login" : "Register"}
           </h1>
           <form className="flex flex-col space-y-4">
-            {!login && <BackArrow />}
+            {!mainScreen && <BackArrow />}
             <input
               type="text"
               placeholder="Username"
@@ -38,14 +45,14 @@ export default function Login() {
               placeholder="Password"
               className="border border-gray-300 p-2 rounded"
             />
-            {!login && (
+            {!mainScreen && (
               <input
                 type="password"
                 placeholder="Confirm Password"
                 className="border border-gray-300 p-2 rounded"
               />
             )}
-            {login ? (
+            {mainScreen ? (
               <button
                 type="submit"
                 onClick={handleLoginButton}
@@ -62,7 +69,7 @@ export default function Login() {
                 Register
               </button>
             )}
-            {login && (
+            {mainScreen && (
               <p className="text-center">
                 Don't have an account?{" "}
                 <span
