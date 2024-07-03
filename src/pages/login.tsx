@@ -12,7 +12,7 @@ export default function Login() {
   const handleMainScreen = () => {
     setMainScreen(true);
   }
-  const handleLoginButton = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginButton = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     navigate("/inventory");
   };
