@@ -11,7 +11,7 @@ export default function Sidebar() {
   console.log("Sidebar rendered");
 
   return (
-    <div className="w-1/4 bg-blue-700 text-white p-5 min-h-screen">
+    <div className="w-1/4 bg-blue-700 text-white p-5 min-h-screen max-w-48">
       <h1 className="mb-4 space-y-2 text-xl">TradeTrack</h1>
       <ul className="flex flex-col space-y-2">
         <li className="hover:bg-blue-600 p-2 rounded cursor-pointer">
