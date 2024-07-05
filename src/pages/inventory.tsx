@@ -258,7 +258,7 @@ export default function Inventory() {
                             </div>
                         </div>
                     )}
-                    <h2 className="text-gray-800 text-2xl mb-4">Inventory</h2>
+                <h2 className="text-gray-800 text-2xl mb-4">Inventory</h2>
                     {materials.length > 0 ? (
                         <table className="min-w-full bg-white">
                             <thead>
