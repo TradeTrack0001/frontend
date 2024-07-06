@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import Sidebar from "../components/sidebar";
+import getInventory from '../hooks/inventory';
 
 // Define the material type
 type Material = {
@@ -43,8 +44,9 @@ export default function Checkin() {
         // Fetch data from the database
         async function fetchMaterials() {
             // Replace with your actual API call
-            const response = await fetch('/api/materials');
-            const data = await response.json();
+            const data = await getInventory();
+            // const response = await fetch('/api/materials');
+            // const data = await response.json();
             setMaterials(data);
         }
         fetchMaterials();

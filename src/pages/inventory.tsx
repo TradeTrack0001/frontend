@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
 import getInventory from "../hooks/inventory";
+import useAddInventory from "../hooks/addInventory";
 
 // Define the material type 
 type Material = {
@@ -79,13 +80,14 @@ export default function Inventory() {
 
   const confirmNewItems = async () => {
     // Post new materials to the database
-    await fetch("/api/materials", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(tempMaterials),
-    });
+    // await fetch("/api/materials", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(tempMaterials),
+    // });
+    await useAddInventory(tempMaterials);
     setMaterials((prev) => [...prev, ...tempMaterials]);
     setTempMaterials([]);
     setIsFormVisible(false); // Hide form after adding materials
