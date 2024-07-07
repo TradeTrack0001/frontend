@@ -17,7 +17,7 @@ export default function Profile() {
         name: '',
         email: '',
         password: '',
-        isAdmin: false,
+        isAdmin: true, // set to false after development is complete
     });
 
     useEffect(() => {
