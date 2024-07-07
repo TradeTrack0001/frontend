@@ -110,7 +110,7 @@ export default function Inventory() {
         <div className="p-3 bg-white rounded shadow">
           {isFormVisible && (
             <div className="mt-4 mb-4">
-              <h3 className="mb-2 text-xl text-gray-800">Add New Material</h3>
+              <h3 className="mb-2 text-xl text-gray-800 border">Add New Material</h3>
               <form
                 onSubmit={addTempMaterial}
                 className="grid grid-cols-2 gap-4"
@@ -299,44 +299,44 @@ export default function Inventory() {
           )}
           <h2 className="mb-4 text-2xl text-gray-800">Inventory</h2>
           {materials.length > 0 ? (
-            <table className="min-w-full bg-white">
+            <table className="min-w-full bg-white ">
               <thead>
-                <tr>
-                  <th className="px-4 py-2 border-b">ID</th>
-                  <th className="px-4 py-2 border-b">Name</th>
-                  <th className="px-4 py-2 border-b">Description</th>
-                  <th className="px-4 py-2 border-b">Quantity</th>
-                  <th className="px-4 py-2 border-b">Status</th>
-                  <th className="px-4 py-2 border-b">Size</th>
-                  <th className="px-4 py-2 border-b">Type</th>
-                  <th className="px-4 py-2 border-b">Check In Date</th>
-                  <th className="px-4 py-2 border-b">Check Out Date</th>
-                  <th className="px-4 py-2 border-b">Location</th>
+                <tr className="bg-gray-100">
+                  <th className="px-4 py-2 border border-black">ID</th>
+                  <th className="px-4 py-2 border border-black">Name</th>
+                  <th className="px-4 py-2 border border-black">Description</th>
+                  <th className="px-4 py-2 border border-black">Quantity</th>
+                  <th className="px-4 py-2 border border-black">Status</th>
+                  <th className="px-4 py-2 border border-black">Size</th>
+                  <th className="px-4 py-2 border border-black">Type</th>
+                  <th className="px-4 py-2 border border-black">Check In Date</th>
+                  <th className="px-4 py-2 border border-black">Check Out Date</th>
+                  <th className="px-4 py-2 border border-black">Location</th>
                 </tr>
               </thead>
               <tbody>
                 {materials.map((material, index) => (
                   <tr key={index}>
-                    <td className="px-4 py-2 border-b">{material.itemID}</td>
-                    <td className="px-4 py-2 border-b">{material.itemName}</td>
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-2 border border-black">{material.itemID}</td>
+                    <td className="px-4 py-2 border border-black">{material.itemName}</td>
+                    <td className="px-4 py-2 border border-black">
                       {material.itemDescription}
                     </td>
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-2 border border-black">
                       {material.itemQuantity}
                     </td>
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-2 border border-black">
                       {material.itemStatus ? "Available" : "Checked Out"}
                     </td>
-                    <td className="px-4 py-2 border-b">{material.itemSize}</td>
-                    <td className="px-4 py-2 border-b">{material.type}</td>
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-2 border border-black">{material.itemSize}</td>
+                    <td className="px-4 py-2 border border-black">{material.type}</td>
+                    <td className="px-4 py-2 border border-black">
                       {material.checkInDate}
                     </td>
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-2 border border-black">
                       {material.checkOutDate}
                     </td>
-                    <td className="px-4 py-2 border-b">{material.location}</td>
+                    <td className="px-4 py-2 border border-black">{material.location}</td>
                   </tr>
                 ))}
               </tbody>

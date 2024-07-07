@@ -1,5 +1,8 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import Sidebar from "../components/sidebar";
+import getInventory from '../hooks/inventory';
+import {updateInventory} from '../hooks/updateInventory';
+import { configDir } from '@tauri-apps/api/path';
 
 // Define the material type
 type Material = {
@@ -20,7 +23,7 @@ type CheckOutItem = {
     id: string;
     name: string;
     location: string;
-    checkOutQuantity: string;
+    checkOutQuantity: string; 
     availableQuantity: string;
     employeeId: string;
     employeeName: string;
@@ -49,9 +52,10 @@ export default function Checkout() {
         // Fetch data from the database
         async function fetchMaterials() {
             // Replace with your actual API call
-            const response = await fetch('/api/materials');
-            const data = await response.json();
-            setMaterials(data);
+            // const response = await fetch('/api/materials');
+            // const data = await response.json();
+            const data = getInventory();
+            setMaterials(await data);
         }
         fetchMaterials();
     }, []);
@@ -93,13 +97,15 @@ export default function Checkout() {
 
     const confirmCheckOutItems = async () => {
         // Post checked-out items to the database
-        await fetch('/api/checkout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(checkedOutItems),
-        });
+        console.log(JSON.stringify(checkedOutItems));
+        await updateInventory(checkedOutItems);
+        // await fetch('/api/checkout', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(checkedOutItems),
+        // });
         setCheckedOutItems([]);
     };
 
