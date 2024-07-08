@@ -59,7 +59,7 @@ export default function Login() {
                 <button
                   type="submit"
                   onClick={handleLoginButton}
-                  className="bg-blue-500 text-white p-2 rounded"
+                  className="bg-blue-700 text-white p-2 rounded"
                 >
                   Login
                 </button>
@@ -77,7 +77,7 @@ export default function Login() {
                   Don't have an account?{" "}
                   <span
                     onClick={handleRegisterButton}
-                    className="cursor-pointer text-blue-600"
+                    className="cursor-pointer text-blue-700"
                   >
                     Register
                   </span>
@@ -85,7 +85,7 @@ export default function Login() {
               )}
             </form>
           </div>
-          <div className="bg-blue-900 p-8 rounded-r-lg flex items-center justify-center">
+          <div className="bg-blue-700 p-8 rounded-r-lg flex items-center justify-center">
             <div className="text-center">
               <img src="src/assets/TradeTrackLogo.png" alt="Company Logo" className="w-32 h-32 mx-auto"/>
               <h1 className="text-white text-4xl font-bold mt-4">TradeTrack</h1>

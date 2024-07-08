@@ -100,7 +100,7 @@ export default function Inventory() {
         <div className="absolute top-5 right-5">
           <button
             onClick={() => setIsFormVisible(!isFormVisible)}
-            className={`bg-blue-500 text-white px-4 py-2 rounded-full ${
+            className={`bg-blue-500 text-white px-4 py-2 rounded-full mb-4 ${
               isFormVisible ? "h-10 w-10" : "h-16 w-16"
             }`}
           >
