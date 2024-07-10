@@ -106,7 +106,7 @@ export default function Orders() {
         <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 p-5">
-                <div className="bg-white p-3 shadow rounded">
+                <div className="bg-white p-3 shadow rounded mt-16">
                     <h2 className="text-gray-800 text-2xl mb-4">Orders</h2>
 
                     <div className="mb-4">

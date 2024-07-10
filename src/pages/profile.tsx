@@ -112,7 +112,7 @@ export default function Profile() {
         <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 p-5">
-                <div className="bg-white p-3 shadow rounded mb-10">
+                <div className="bg-white p-3 shadow rounded mb-10 mt-16">
                     <h2 className="text-gray-800 text-2xl mb-4">Profile</h2>
                     <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 mb-8">
                         <div>

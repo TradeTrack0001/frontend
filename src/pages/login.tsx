@@ -1,98 +1,71 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from "react-router-dom";
 
+
 export default function Login() {
-  const [mainScreen, setMainScreen] = useState(true);
-  const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate(); // temporary navigation to the rest of the app
 
-  const handleRegisterButton = () => {
-    setMainScreen(false);
-  };
+    const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    };
 
-  const handleMainScreen = () => {
-    setMainScreen(true);
-  };
+    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    };
 
-  const handleLoginButton = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    navigate("/inventory");
-  };
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        // Handle login logic here
+        alert(`Logging in with username: ${username} and password: ${password}`);
+        navigate("/inventory"); // Temporary navigation to the rest of the app
 
-  const BackArrow = () => {
+    };
+
     return (
-      <button onClick={handleMainScreen} className="mb-2 cursor-pointer text-blue-500">
-        ← Back
-      </button>
-    );
-  };
-
-  return (
-    <div className="relative flex min-h-screen">
-      <div className="w-1/2 bg-blue-300 min-h-screen"></div>
-      <div className="w-1/2 bg-white min-h-screen"></div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex bg-white rounded shadow-lg">
-          <div className="bg-white p-8 rounded-l-lg">
-            <h1 className="text-4xl mb-2 text-center">
-              {mainScreen ? "Login" : "Register"}
-            </h1>
-            <form className="flex flex-col space-y-4">
-              {!mainScreen && <BackArrow />}
-              <input
-                type="text"
-                placeholder="Username"
-                className="border border-gray-300 p-2 rounded"
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className="border border-gray-300 p-2 rounded"
-              />
-              {!mainScreen && (
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className="border border-gray-300 p-2 rounded"
-                />
-              )}
-              {mainScreen ? (
-                <button
-                  type="submit"
-                  onClick={handleLoginButton}
-                  className="bg-blue-700 text-white p-2 rounded"
-                >
-                  Login
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  onClick={handleRegisterButton}
-                  className="bg-blue-500 text-white p-2 rounded"
-                >
-                  Register
-                </button>
-              )}
-              {mainScreen && (
-                <p className="text-center">
-                  Don't have an account?{" "}
-                  <span
-                    onClick={handleRegisterButton}
-                    className="cursor-pointer text-blue-700"
-                  >
-                    Register
-                  </span>
-                </p>
-              )}
-            </form>
-          </div>
-          <div className="bg-blue-700 p-8 rounded-r-lg flex items-center justify-center">
-            <div className="text-center">
-              <img src="src/assets/TradeTrackLogo.png" alt="Company Logo" className="w-32 h-32 mx-auto"/>
-              <h1 className="text-white text-4xl font-bold mt-4">TradeTrack</h1>
+        <div className="flex min-h-screen">
+            <div className="hidden md:flex flex-1 bg-blue-300">
+                {/* Desktop Welcome Card */}
+                <div className="flex items-center justify-center w-full">
+                    <div className="text-center p-8 bg-blue-900 text-white rounded-lg shadow-lg">
+                        <img src="src/assets/TradeTrackLogo.png" alt="Company Logo" className="w-32 h-32 mx-auto" />
+                        <h1 className="text-4xl font-bold mt-4">Welcome to TradeTrack</h1>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div className="flex-1 flex items-center justify-center bg-white">
+                {/* Login Card */}
+                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                    <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-gray-700">Username</label>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={handleUsernameChange}
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">Password</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+                        <button type="submit" className="bg-blue-500 text-white w-full py-2 rounded">
+                            Login
+                        </button>
+                    </form>
+                    <div className="text-center mt-4">
+                        Don't have an account? <a href="/register" className="text-blue-500">Register</a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

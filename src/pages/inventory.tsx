@@ -94,20 +94,20 @@ export default function Inventory() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Sidebar />
-      <div className="relative flex-1 p-5">
+      <div className="pt-16 flex-1 p-5">
         <div className="absolute top-5 right-5">
           <button
             onClick={() => setIsFormVisible(!isFormVisible)}
-            className={`bg-blue-500 text-white px-4 py-2 rounded-full mb-4 ${
+            className={`bg-blue-500 text-white px-4 py-2 rounded-full mb-4 mt-20 ${
               isFormVisible ? "h-10 w-10" : "h-16 w-16"
             }`}
           >
             {isFormVisible ? "-" : "+"}
           </button>
         </div>
-        <div className="p-3 bg-white rounded shadow">
+        <div className="p-3 mt-16 bg-white rounded shadow">
           {isFormVisible && (
             <div className="mt-4 mb-4">
               <h3 className="mb-2 text-xl text-gray-800 border">Add New Material</h3>
