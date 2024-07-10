@@ -25,12 +25,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await axios.post("api/auth/login", {
+      const response = await axios.post("http://localhost:2000/auth/login", {
         email,
         password,
       });
       setAuth(response.data);
       localStorage.setItem("auth", JSON.stringify(response.data));
+      console.log(response.data);
     } catch (error) {
       console.error("Login error", error);
       throw error;
