@@ -1,6 +1,6 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
-import getInventory from '../hooks/inventory';
+import getInventory from "../hooks/inventory";
 
 // Define the material type
 type Material = {
@@ -31,13 +31,13 @@ export default function Checkin() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [checkedInItems, setCheckedInItems] = useState<CheckInItem[]>([]);
   const [newCheckIn, setNewCheckIn] = useState<CheckInItem>({
-    id: '',
-    name: '',
-    quantity: '',
-    employeeId: '',
-    employeeName: '',
-    checkInDate: '',
-    location: '',
+    id: "",
+    name: "",
+    quantity: "",
+    employeeId: "",
+    employeeName: "",
+    checkInDate: "",
+    location: "",
   });
 
   useEffect(() => {
@@ -62,13 +62,13 @@ export default function Checkin() {
     e.preventDefault();
     setCheckedInItems((prev) => [...prev, newCheckIn]);
     setNewCheckIn({
-      id: '',
-      name: '',
-      quantity: '',
-      employeeId: '',
-      employeeName: '',
-      checkInDate: '',
-      location: '',
+      id: "",
+      name: "",
+      quantity: "",
+      employeeId: "",
+      employeeName: "",
+      checkInDate: "",
+      location: "",
     });
   };
 
@@ -83,10 +83,10 @@ export default function Checkin() {
 
   const confirmCheckInItems = async () => {
     // Post checked-in items to the database
-    await fetch('/api/checkin', {
-      method: 'POST',
+    await fetch("/api/checkin", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(checkedInItems),
     });
@@ -94,15 +94,17 @@ export default function Checkin() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col min-h-screen lg:flex-row">
       <Sidebar />
       <div className="flex-1 p-5 mt-16 lg:mt-0">
-        <div className="bg-white p-3 shadow rounded">
-          <h2 className="text-gray-800 text-2xl mb-4">Check In</h2>
+        <div className="p-3 bg-white rounded shadow">
+          <h2 className="mb-4 text-2xl text-gray-800">Check In</h2>
 
           <div className="mt-4 mb-4">
-            <h3 className="text-gray-800 text-xl mb-2">Check In New Material</h3>
-            <form onSubmit={handleCheckIn} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <h3 className="mb-2 text-xl text-gray-800">
+              Check In New Material
+            </h3>
+            <form onSubmit={handleCheckIn} className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700">ID</label>
                 <input
@@ -111,7 +113,7 @@ export default function Checkin() {
                   placeholder="ID"
                   value={newCheckIn.id}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
               <div>
@@ -122,7 +124,7 @@ export default function Checkin() {
                   placeholder="Name"
                   value={newCheckIn.name}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
               <div>
@@ -133,7 +135,7 @@ export default function Checkin() {
                   placeholder="Quantity"
                   value={newCheckIn.quantity}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
               <div>
@@ -144,7 +146,7 @@ export default function Checkin() {
                   placeholder="Employee ID"
                   value={newCheckIn.employeeId}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
               <div>
@@ -155,7 +157,7 @@ export default function Checkin() {
                   placeholder="Employee Name"
                   value={newCheckIn.employeeName}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
               <div>
@@ -165,7 +167,7 @@ export default function Checkin() {
                   name="checkInDate"
                   value={newCheckIn.checkInDate}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
               <div>
@@ -176,38 +178,57 @@ export default function Checkin() {
                   placeholder="Location"
                   value={newCheckIn.location}
                   onChange={handleChange}
-                  className="p-2 border rounded w-full"
+                  className="w-full p-2 border rounded"
                 />
               </div>
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded col-span-1 lg:col-span-2">
+              <button
+                type="submit"
+                className="col-span-2 px-4 py-2 text-white bg-blue-500 rounded"
+              >
                 Check In Material
               </button>
             </form>
           </div>
 
-          <h3 className="text-gray-800 text-xl mb-2">Checked In Materials</h3>
-          <table className="min-w-full bg-white mb-4">
+          <h3 className="mb-2 text-xl text-gray-800">Checked In Materials</h3>
+          <table className="min-w-full mb-4 bg-white">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">ID</th>
-                <th className="py-2 px-4 border-b">Name</th>
-                <th className="py-2 px-4 border-b">Quantity</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Employee ID</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Employee Name</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Check In Date</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Location</th>
+                <th className="px-4 py-2 border-b">ID</th>
+                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-2 border-b">Quantity</th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Employee ID
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Employee Name
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Check In Date
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Location
+                </th>
               </tr>
             </thead>
             <tbody>
               {checkedInItems.map((item, index) => (
                 <tr key={index}>
-                  <td className="py-2 px-4 border-b">{item.id}</td>
-                  <td className="py-2 px-4 border-b">{item.name}</td>
-                  <td className="py-2 px-4 border-b">{item.quantity}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{item.employeeId}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{item.employeeName}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{item.checkInDate}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{item.location}</td>
+                  <td className="px-4 py-2 border-b">{item.id}</td>
+                  <td className="px-4 py-2 border-b">{item.name}</td>
+                  <td className="px-4 py-2 border-b">{item.quantity}</td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {item.employeeId}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {item.employeeName}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {item.checkInDate}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {item.location}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -215,26 +236,43 @@ export default function Checkin() {
 
           {checkedInItems.length > 0 && (
             <div className="mt-4">
-              <button onClick={confirmCheckInItems} className="bg-blue-500 text-white px-4 py-2 rounded">
+              <button
+                onClick={confirmCheckInItems}
+                className="px-4 py-2 text-white bg-blue-500 rounded"
+              >
                 Confirm Check-In Items
               </button>
             </div>
           )}
 
-          <h3 className="text-gray-800 text-xl mb-2">Inventory</h3>
+          <h3 className="mb-2 text-xl text-gray-800">Inventory</h3>
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">ID</th>
-                <th className="py-2 px-4 border-b">Name</th>
-                <th className="py-2 px-4 border-b">Quantity</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Description</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Status</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Size</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Type</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Check In Date</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Check Out Date</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Location</th>
+                <th className="px-4 py-2 border-b">ID</th>
+                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-2 border-b">Quantity</th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Description
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Status
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Size
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Type
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Check In Date
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Check Out Date
+                </th>
+                <th className="hidden px-4 py-2 border-b lg:table-cell">
+                  Location
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -244,16 +282,32 @@ export default function Checkin() {
                   className="cursor-pointer"
                   onClick={() => handleInventoryItemClick(material)}
                 >
-                  <td className="py-2 px-4 border-b">{material.itemID}</td>
-                  <td className="py-2 px-4 border-b">{material.itemName}</td>
-                  <td className="py-2 px-4 border-b">{material.itemQuantity}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.itemDescription}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.itemStatus ? 'Available' : 'Checked Out'}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.itemSize}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.type}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.checkInDate}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.checkOutDate}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.location}</td>
+                  <td className="px-4 py-2 border-b">{material.itemID}</td>
+                  <td className="px-4 py-2 border-b">{material.itemName}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemQuantity}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.itemDescription}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.itemStatus ? "Available" : "Checked Out"}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.itemSize}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.type}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.checkInDate}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.checkOutDate}
+                  </td>
+                  <td className="hidden px-4 py-2 border-b lg:table-cell">
+                    {material.location}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
 import getInventory from '../hooks/inventory';
 import { updateInventory } from '../hooks/updateInventory';
@@ -36,23 +36,25 @@ export default function Checkout() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [checkedOutItems, setCheckedOutItems] = useState<CheckOutItem[]>([]);
   const [newCheckOut, setNewCheckOut] = useState<CheckOutItem>({
-    id: '',
-    name: '',
-    location: '',
-    checkOutQuantity: '',
-    availableQuantity: '',
-    employeeId: '',
-    employeeName: '',
-    checkOutDate: '',
-    duration: '',
-    dueOn: '',
+    id: "",
+    name: "",
+    location: "",
+    checkOutQuantity: "",
+    availableQuantity: "",
+    employeeId: "",
+    employeeName: "",
+    checkOutDate: "",
+    duration: "",
+    dueOn: "",
   });
 
   useEffect(() => {
     // Fetch data from the database
     async function fetchMaterials() {
       // Replace with your actual API call
-      const data = await getInventory();
+      const response = await fetch("/api/get_products");
+      console.log(response);
+      const data = await response.json();
       setMaterials(data);
     }
     fetchMaterials();
@@ -70,16 +72,16 @@ export default function Checkout() {
     e.preventDefault();
     setCheckedOutItems((prev) => [...prev, newCheckOut]);
     setNewCheckOut({
-      id: '',
-      name: '',
-      location: '',
-      checkOutQuantity: '',
-      availableQuantity: '',
-      employeeId: '',
-      employeeName: '',
-      checkOutDate: '',
-      duration: '',
-      dueOn: '',
+      id: "",
+      name: "",
+      location: "",
+      checkOutQuantity: "",
+      availableQuantity: "",
+      employeeId: "",
+      employeeName: "",
+      checkOutDate: "",
+      duration: "",
+      dueOn: "",
     });
   };
 
@@ -95,25 +97,31 @@ export default function Checkout() {
 
   const confirmCheckOutItems = async () => {
     // Post checked-out items to the database
-    console.log(JSON.stringify(checkedOutItems));
-    await updateInventory(checkedOutItems);
+    await fetch("/api/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(checkedOutItems),
+    });
     setCheckedOutItems([]);
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 p-5 mt-16 lg:mt-0">
-        <div className="bg-white p-3 shadow rounded">
-          <h2 className="text-gray-800 text-2xl mb-4">Check Out Details</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="flex-1 p-5">
+        <div className="p-3 bg-white rounded shadow">
+          <h2 className="mb-4 text-2xl text-gray-800">Check Out Details</h2>
+
+          <div className="grid grid-cols-2 gap-4">
             {/* Material Details */}
             <div>
-              <h3 className="text-gray-800 text-xl mb-2">Material Details</h3>
+              <h3 className="mb-2 text-xl text-gray-800">Material Details</h3>
               <form onSubmit={handleCheckOut}>
                 <div className="mb-4">
                   <label className="block text-gray-700">ID</label>
-                  <input 
+                  <input
                     type="text"
                     name="id"
                     value={newCheckOut.id}
@@ -142,7 +150,9 @@ export default function Checkout() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Check Out Quantity</label>
+                  <label className="block text-gray-700">
+                    Check Out Quantity
+                  </label>
                   <input
                     type="number"
                     name="checkOutQuantity"
@@ -152,7 +162,9 @@ export default function Checkout() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Available Quantity</label>
+                  <label className="block text-gray-700">
+                    Available Quantity
+                  </label>
                   <input
                     type="number"
                     name="availableQuantity"
@@ -163,66 +175,136 @@ export default function Checkout() {
                 </div>
               </form>
             </div>
+
+            {/* Check Out To */}
+            <div>
+              <h3 className="mb-2 text-xl text-gray-800">Check Out To</h3>
+              <form>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Employee ID</label>
+                  <input
+                    type="text"
+                    name="employeeId"
+                    value={newCheckOut.employeeId}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Employee Name</label>
+                  <input
+                    type="text"
+                    name="employeeName"
+                    value={newCheckOut.employeeName}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Check Out Date</label>
+                  <input
+                    type="date"
+                    name="checkOutDate"
+                    value={newCheckOut.checkOutDate}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Duration</label>
+                  <input
+                    type="number"
+                    name="duration"
+                    value={newCheckOut.duration}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Due On</label>
+                  <input
+                    type="date"
+                    name="dueOn"
+                    value={newCheckOut.dueOn}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </form>
+            </div>
           </div>
+
           <div className="mt-4">
-            <button 
-              onClick={handleCheckOut} 
-              className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button
+              onClick={handleCheckOut}
+              className="px-4 py-2 text-white bg-blue-500 rounded"
+            >
               Check Out Material
             </button>
           </div>
+
           {checkedOutItems.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-gray-800 text-xl mb-2">Checked Out Items</h3>
-              <table className="min-w-full bg-white mb-4">
+              <h3 className="mb-2 text-xl text-gray-800">Checked Out Items</h3>
+              <table className="min-w-full mb-4 bg-white">
                 <thead>
                   <tr>
-                    <th className="py-2 px-4 border-b">ID</th>
-                    <th className="py-2 px-4 border-b">Name</th>
-                    <th className="py-2 px-4 border-b">Location</th>
-                    <th className="py-2 px-4 border-b">Check Out Quantity</th>
-                    <th className="py-2 px-4 border-b">Employee ID</th>
-                    <th className="py-2 px-4 border-b">Employee Name</th>
-                    <th className="py-2 px-4 border-b">Check Out Date</th>
-                    <th className="py-2 px-4 border-b">Duration</th>
-                    <th className="py-2 px-4 border-b">Due On</th>
+                    <th className="px-4 py-2 border-b">ID</th>
+                    <th className="px-4 py-2 border-b">Name</th>
+                    <th className="px-4 py-2 border-b">Location</th>
+                    <th className="px-4 py-2 border-b">Check Out Quantity</th>
+                    <th className="px-4 py-2 border-b">Employee ID</th>
+                    <th className="px-4 py-2 border-b">Employee Name</th>
+                    <th className="px-4 py-2 border-b">Check Out Date</th>
+                    <th className="px-4 py-2 border-b">Duration</th>
+                    <th className="px-4 py-2 border-b">Due On</th>
                   </tr>
                 </thead>
                 <tbody>
                   {checkedOutItems.map((item, index) => (
                     <tr key={index}>
-                      <td className="py-2 px-4 border-b">{item.id}</td>
-                      <td className="py-2 px-4 border-b">{item.name}</td>
-                      <td className="py-2 px-4 border-b">{item.location}</td>
-                      <td className="py-2 px-4 border-b">{item.checkOutQuantity}</td>
-                      <td className="py-2 px-4 border-b">{item.employeeId}</td>
-                      <td className="py-2 px-4 border-b">{item.employeeName}</td>
-                      <td className="py-2 px-4 border-b">{item.checkOutDate}</td>
-                      <td className="py-2 px-4 border-b">{item.duration}</td>
-                      <td className="py-2 px-4 border-b">{item.dueOn}</td>
+                      <td className="px-4 py-2 border-b">{item.id}</td>
+                      <td className="px-4 py-2 border-b">{item.name}</td>
+                      <td className="px-4 py-2 border-b">{item.location}</td>
+                      <td className="px-4 py-2 border-b">
+                        {item.checkOutQuantity}
+                      </td>
+                      <td className="px-4 py-2 border-b">{item.employeeId}</td>
+                      <td className="px-4 py-2 border-b">
+                        {item.employeeName}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {item.checkOutDate}
+                      </td>
+                      <td className="px-4 py-2 border-b">{item.duration}</td>
+                      <td className="px-4 py-2 border-b">{item.dueOn}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <button onClick={confirmCheckOutItems} className="bg-blue-500 text-white px-4 py-2 rounded">
+              <button
+                onClick={confirmCheckOutItems}
+                className="px-4 py-2 text-white bg-blue-500 rounded"
+              >
                 Confirm Check-Out Items
               </button>
             </div>
           )}
-          <h3 className="text-gray-800 text-xl mb-2">Inventory</h3>
+
+          <h3 className="mb-2 text-xl text-gray-800">Inventory</h3>
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">ID</th>
-                <th className="py-2 px-4 border-b">Name</th>
-                <th className="py-2 px-4 border-b">Quantity</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Description</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Status</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Size</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Type</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Check In Date</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Check Out Date</th>
-                <th className="hidden lg:table-cell py-2 px-4 border-b">Location</th>
+                <th className="px-4 py-2 border-b">ID</th>
+                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-2 border-b">Description</th>
+                <th className="px-4 py-2 border-b">Quantity</th>
+                <th className="px-4 py-2 border-b">Status</th>
+                <th className="px-4 py-2 border-b">Size</th>
+                <th className="px-4 py-2 border-b">Type</th>
+                <th className="px-4 py-2 border-b">Check In Date</th>
+                <th className="px-4 py-2 border-b">Check Out Date</th>
+                <th className="px-4 py-2 border-b">Location</th>
               </tr>
             </thead>
             <tbody>
@@ -232,16 +314,24 @@ export default function Checkout() {
                   className="cursor-pointer"
                   onClick={() => handleInventoryItemClick(material)}
                 >
-                  <td className="py-2 px-4 border-b">{material.itemID}</td>
-                  <td className="py-2 px-4 border-b">{material.itemName}</td>
-                  <td className="py-2 px-4 border-b">{material.itemQuantity}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.itemDescription}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.itemStatus ? 'Available' : 'Checked Out'}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.itemSize}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.type}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.checkInDate}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.checkOutDate}</td>
-                  <td className="hidden lg:table-cell py-2 px-4 border-b">{material.location}</td>
+                  <td className="px-4 py-2 border-b">{material.itemID}</td>
+                  <td className="px-4 py-2 border-b">{material.itemName}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemDescription}
+                  </td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemQuantity}
+                  </td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemStatus ? "Available" : "Checked Out"}
+                  </td>
+                  <td className="px-4 py-2 border-b">{material.itemSize}</td>
+                  <td className="px-4 py-2 border-b">{material.type}</td>
+                  <td className="px-4 py-2 border-b">{material.checkInDate}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.checkOutDate}
+                  </td>
+                  <td className="px-4 py-2 border-b">{material.location}</td>
                 </tr>
               ))}
             </tbody>

@@ -19,7 +19,7 @@ export default defineConfig(async () => ({
       '/api': {
         target: 'http://localhost:2000', // Replace with your backend server URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false,
       },
     },
     port: 1420,
