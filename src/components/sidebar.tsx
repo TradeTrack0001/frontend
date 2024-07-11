@@ -79,6 +79,14 @@ export default function Sidebar() {
                 Orders
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => handleNavigation("/workspace")}
+                className="hover:bg-blue-800 p-2 rounded w-full text-left"
+                >
+                Workspace
+                </button>
+            </li>
           </ul>
         </div>
         <div className="mt-auto">
