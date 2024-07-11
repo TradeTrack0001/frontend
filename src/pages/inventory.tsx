@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
+import toast from "react-hot-toast";
 import getInventory from "../hooks/inventory";
 import useAddInventory from "../hooks/addInventory";
 
@@ -60,8 +61,26 @@ export default function Inventory() {
     }));
   };
 
-  const addTempMaterial = (e: FormEvent) => {
+  const addTempMaterial = async (e: FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await fetch("/api/add_product", {
+        // Updated URL
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newMaterial),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Product added:", result);
+      } else {
+        console.error("Error adding product:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
 
     setTempMaterials((prev) => [...prev, newMaterial]);
     setNewMaterial({
@@ -76,6 +95,7 @@ export default function Inventory() {
       checkOutDate: "N/A",
       location: "",
     });
+    toast.success("Material added successfully");
   };
 
   const confirmNewItems = async () => {
@@ -96,7 +116,7 @@ export default function Inventory() {
   return (
     <div className="flex flex-col min-h-screen">
       <Sidebar />
-      <div className="pt-16 flex-1 p-5">
+      <div className="flex-1 p-5 pt-16">
         <div className="absolute top-5 right-5">
           <button
             onClick={() => setIsFormVisible(!isFormVisible)}
