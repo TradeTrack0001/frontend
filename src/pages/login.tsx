@@ -5,6 +5,9 @@ import { AuthContext } from "../hooks/AuthContext";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoginForm, setIsLoginForm] = useState(true);
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
@@ -16,14 +19,42 @@ const Login: React.FC = () => {
     setPassword(e.target.value);
   };
 
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(e.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const handleRegisterButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsLoginForm(false);
+  };
+
+  const handleLoginButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsLoginForm(true);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (authContext) {
       try {
-        await authContext.login(email, password);
-        navigate("/inventory");
+        if (isLoginForm) {
+          await authContext.login(email, password);
+          navigate("/inventory");
+        } else {
+          // Add your registration logic here
+          if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+          }
+          await authContext.register(email, password);
+          navigate("/inventory");
+        }
       } catch (error) {
-        alert("Login failed");
+        alert(isLoginForm ? "Login failed" : "Registration failed");
       }
     }
   };
@@ -43,9 +74,9 @@ const Login: React.FC = () => {
             <h1 className="text-4xl font-bold text-white text-center">Welcome to TradeTrack</h1>
           </div>
           <div className="lg:w-1/2 p-8 flex flex-col items-center justify-center bg-white">
-            <h2 className="mb-4 text-2xl font-bold text-center text-blue-800">Login</h2>
-            <form onSubmit={handleSubmit} className="w-full space-y-4">
-              <div>
+            <h2 className="mb-4 text-2xl font-bold text-center text-blue-800">{isLoginForm ? "Login" : "Register"}</h2>
+            <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto">
+              <div className="mb-4">
                 <label className="block text-gray-700">Email</label>
                 <input
                   type="email"
@@ -54,28 +85,68 @@ const Login: React.FC = () => {
                   className="w-full p-2 border rounded"
                 />
               </div>
-              <div>
+              <div className="mb-4">
                 <label className="block text-gray-700">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  className="w-full p-2 border rounded"
-                />
+                <div className="relative w-full">
+                  <input
+                    type={isPasswordVisible ? "text" : "password"}
+                    value={password}
+                    onChange={handlePasswordChange}
+                    className="w-full p-2 border rounded"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 px-3 py-1 text-sm text-gray-600 focus:outline-none"
+                  >
+                    {isPasswordVisible ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
+              {!isLoginForm && (
+                <div className="mb-4">
+                  <label className="block text-gray-700">Confirm Password</label>
+                  <div className="relative w-full">
+                    <input
+                      type={isPasswordVisible ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
+                      className="w-full p-2 border rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-0 px-3 py-1 text-sm text-gray-600 focus:outline-none"
+                    >
+                      {isPasswordVisible ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                </div>
+              )}
               <button
                 type="submit"
                 className="w-full py-2 text-white bg-blue-800 rounded"
               >
-                Login
+                {isLoginForm ? "Login" : "Register"}
               </button>
+              <div className="mt-4 text-center">
+                {isLoginForm ? (
+                  <>
+                    Don't have an account?{" "}
+                    <button onClick={handleRegisterButton} className="text-blue-500">
+                      Register
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Already have an account?{" "}
+                    <button onClick={handleLoginButton} className="text-blue-500">
+                      Login
+                    </button>
+                  </>
+                )}
+              </div>
             </form>
-            <div className="mt-4 text-center">
-              Don't have an account?{" "}
-              <a href="/register" className="text-blue-500">
-                Register
-              </a>
-            </div>
           </div>
         </div>
       </div>
