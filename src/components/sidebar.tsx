@@ -7,7 +7,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path) => {
     setIsSidebarOpen(false); // Close sidebar on navigation
     navigate(path);
   };
@@ -20,12 +20,10 @@ export default function Sidebar() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  console.log("Sidebar rendered");
-
   return (
     <>
-      {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 bg-blue-700 text-white flex items-center p-4 z-20">
+      {/* Top bar for small screens */}
+      <div className="fixed md:hidden top-0 left-0 right-0 bg-blue-700 text-white flex items-center p-4 z-20">
         <button onClick={toggleSidebar} className="text-white mr-4">
           <FontAwesomeIcon icon={isSidebarOpen ? faTimes : faBars} />
         </button>
@@ -33,8 +31,8 @@ export default function Sidebar() {
         <h1 className="text-xl">TradeTrack</h1>
       </div>
 
-      {/* Sidebar */}
-      <div className={`fixed top-0 left-0 bottom-0 bg-blue-700 text-white p-5 min-h-screen w-64 transition-transform transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} z-30`}>
+      {/* Sidebar for all screens */}
+      <div className={`fixed top-0 left-0 bottom-0 bg-blue-700 text-white p-5 min-h-screen w-64 transition-transform transform md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} z-30`}>
         <div>
           <img src="src/assets/TradeTrackLogo.png" alt="Company Logo" className="w-32 h-32 mx-auto" />
           <h1 className="mb-6 text-2xl text-center">TradeTrack</h1>
@@ -83,9 +81,9 @@ export default function Sidebar() {
               <button
                 onClick={() => handleNavigation("/workspace")}
                 className="hover:bg-blue-800 p-2 rounded w-full text-left"
-                >
+              >
                 Workspace
-                </button>
+              </button>
             </li>
           </ul>
         </div>
@@ -99,10 +97,10 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Overlay for blurring the background when sidebar is open */}
+      {/* Overlay for small screens when sidebar is open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black opacity-50 z-20"
+          className="fixed inset-0 bg-black opacity-50 z-20 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}

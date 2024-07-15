@@ -38,10 +38,7 @@ export default function Inventory() {
   useEffect(() => {
     // Fetch data from the database
     async function fetchMaterials() {
-      // Replace with your actual API call
       const data: Material[] = await getInventory();
-      // const response = await fetch("/api/materials");
-      // const data = await response.json();
       console.log(data);
       setMaterials(data);
     }
@@ -65,7 +62,6 @@ export default function Inventory() {
     e.preventDefault();
     try {
       const response = await fetch("/api/add_product", {
-        // Updated URL
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,14 +95,6 @@ export default function Inventory() {
   };
 
   const confirmNewItems = async () => {
-    // Post new materials to the database
-    // await fetch("/api/materials", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(tempMaterials),
-    // });
     await useAddInventory(tempMaterials);
     setMaterials((prev) => [...prev, ...tempMaterials]);
     setTempMaterials([]);
@@ -114,9 +102,9 @@ export default function Inventory() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 p-5 pt-16">
+      <div className="flex-1 p-5 pt-16 md:ml-64">
         <div className="absolute top-5 right-5">
           <button
             onClick={() => setIsFormVisible(!isFormVisible)}
@@ -131,10 +119,7 @@ export default function Inventory() {
           {isFormVisible && (
             <div className="mt-4 mb-4">
               <h3 className="mb-2 text-xl text-gray-800 border">Add New Material</h3>
-              <form
-                onSubmit={addTempMaterial}
-                className="grid grid-cols-2 gap-4"
-              >
+              <form onSubmit={addTempMaterial} className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700">ID</label>
                   <input
@@ -256,57 +241,41 @@ export default function Inventory() {
 
           {tempMaterials.length > 0 && (
             <div className="mt-4 mb-4">
-              <h3 className="mb-2 text-xl text-gray-800">
-                New Materials to be Added
-              </h3>
-              <table className="min-w-full bg-white">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2 border-b">ID</th>
-                    <th className="px-4 py-2 border-b">Name</th>
-                    <th className="px-4 py-2 border-b">Description</th>
-                    <th className="px-4 py-2 border-b">Quantity</th>
-                    <th className="px-4 py-2 border-b">Status</th>
-                    <th className="px-4 py-2 border-b">Size</th>
-                    <th className="px-4 py-2 border-b">Type</th>
-                    <th className="px-4 py-2 border-b">Check In Date</th>
-                    <th className="px-4 py-2 border-b">Check Out Date</th>
-                    <th className="px-4 py-2 border-b">Location</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tempMaterials.map((material, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2 border-b">{material.itemID}</td>
-                      <td className="px-4 py-2 border-b">
-                        {material.itemName}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {material.itemDescription}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {material.itemQuantity}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {material.itemStatus ? "Available" : "Checked Out"}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {material.itemSize}
-                      </td>
-                      <td className="px-4 py-2 border-b">{material.type}</td>
-                      <td className="px-4 py-2 border-b">
-                        {material.checkInDate}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {material.checkOutDate}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {material.location}
-                      </td>
+              <h3 className="mb-2 text-xl text-gray-800">New Materials to be Added</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 border-b">ID</th>
+                      <th className="px-4 py-2 border-b">Name</th>
+                      <th className="px-4 py-2 border-b">Description</th>
+                      <th className="px-4 py-2 border-b">Quantity</th>
+                      <th className="px-4 py-2 border-b">Status</th>
+                      <th className="px-4 py-2 border-b">Size</th>
+                      <th className="px-4 py-2 border-b">Type</th>
+                      <th className="px-4 py-2 border-b">Check In Date</th>
+                      <th className="px-4 py-2 border-b">Check Out Date</th>
+                      <th className="px-4 py-2 border-b">Location</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {tempMaterials.map((material, index) => (
+                      <tr key={index}>
+                        <td className="px-4 py-2 border-b">{material.itemID}</td>
+                        <td className="px-4 py-2 border-b">{material.itemName}</td>
+                        <td className="px-4 py-2 border-b">{material.itemDescription}</td>
+                        <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
+                        <td className="px-4 py-2 border-b">{material.itemStatus ? "Available" : "Checked Out"}</td>
+                        <td className="px-4 py-2 border-b">{material.itemSize}</td>
+                        <td className="px-4 py-2 border-b">{material.type}</td>
+                        <td className="px-4 py-2 border-b">{material.checkInDate}</td>
+                        <td className="px-4 py-2 border-b">{material.checkOutDate}</td>
+                        <td className="px-4 py-2 border-b">{material.location}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <div className="mt-4">
                 <button
                   onClick={confirmNewItems}
@@ -319,48 +288,40 @@ export default function Inventory() {
           )}
           <h2 className="mb-4 text-2xl text-gray-800">Inventory</h2>
           {materials.length > 0 ? (
-            <table className="min-w-full bg-white ">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="px-4 py-2 border border-black">ID</th>
-                  <th className="px-4 py-2 border border-black">Name</th>
-                  <th className="px-4 py-2 border border-black">Description</th>
-                  <th className="px-4 py-2 border border-black">Quantity</th>
-                  <th className="px-4 py-2 border border-black">Status</th>
-                  <th className="px-4 py-2 border border-black">Size</th>
-                  <th className="px-4 py-2 border border-black">Type</th>
-                  <th className="px-4 py-2 border border-black">Check In Date</th>
-                  <th className="px-4 py-2 border border-black">Check Out Date</th>
-                  <th className="px-4 py-2 border border-black">Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.map((material, index) => (
-                  <tr key={index}>
-                    <td className="px-4 py-2 border border-black">{material.itemID}</td>
-                    <td className="px-4 py-2 border border-black">{material.itemName}</td>
-                    <td className="px-4 py-2 border border-black">
-                      {material.itemDescription}
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      {material.itemQuantity}
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      {material.itemStatus ? "Available" : "Checked Out"}
-                    </td>
-                    <td className="px-4 py-2 border border-black">{material.itemSize}</td>
-                    <td className="px-4 py-2 border border-black">{material.type}</td>
-                    <td className="px-4 py-2 border border-black">
-                      {material.checkInDate}
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      {material.checkOutDate}
-                    </td>
-                    <td className="px-4 py-2 border border-black">{material.location}</td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">ID</th>
+                    <th className="px-4 py-2 border border-black">Name</th>
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">Description</th>
+                    <th className="px-4 py-2 border border-black">Quantity</th>
+                    <th className="px-4 py-2 border border-black">Status</th>
+                    <th className="px-4 py-2 border border-black">Size</th>
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">Type</th>
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">Check In Date</th>
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">Check Out Date</th>
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">Location</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {materials.map((material, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.itemID}</td>
+                      <td className="px-4 py-2 border border-black">{material.itemName}</td>
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.itemDescription}</td>
+                      <td className="px-4 py-2 border border-black">{material.itemQuantity}</td>
+                      <td className="px-4 py-2 border border-black">{material.itemStatus ? "Available" : "Checked Out"}</td>
+                      <td className="px-4 py-2 border border-black">{material.itemSize}</td>
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.type}</td>
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.checkInDate}</td>
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.checkOutDate}</td>
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.location}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
             <div className="mt-4 text-center text-gray-700">No items found</div>
           )}
