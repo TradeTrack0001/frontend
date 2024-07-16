@@ -5,6 +5,7 @@ import Profile from "./pages/profile";
 import Checkout from "./pages/checkout";
 import Checkin from "./pages/checkin";
 import Orders from "./pages/orders";
+import Workspace from "./pages/workspace";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./hooks/AuthContext";
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/checkin" element={<Checkin />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/workspace" element={<Workspace />} />
         </Routes>
       </AuthProvider>
     </>
