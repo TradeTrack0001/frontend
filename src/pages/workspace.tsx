@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
+import axios from "axios";
 
 type Workspace = {
-    id: number;
+    id: string;
     name: string;
     users: string[];
 };
@@ -13,35 +14,72 @@ export default function Workspace() {
     const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null);
     const [newUserName, setNewUserName] = useState("");
 
-    const handleCreateWorkspace = (e: React.FormEvent) => {
-        e.preventDefault();
-        const newWorkspace = {
-            id: workspaces.length + 1,
-            name: newWorkspaceName,
-            users: [],
+    useEffect(() => {
+        // Fetch workspaces from the backend
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await axios.get("/api/workspaces");
+                setWorkspaces(response.data);
+            } catch (error) {
+                console.error("Error fetching workspaces:", error);
+            }
         };
-        setWorkspaces([...workspaces, newWorkspace]);
-        setNewWorkspaceName("");
+        fetchWorkspaces();
+    }, []);
+
+    const handleCreateWorkspace = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            // Fetch the latest workspace UUID
+            const response = await axios.get("/api/workspace/fetch-id");
+            let newId = response.data.lastUuid ? parseInt(response.data.lastUuid) + 1 : 1;
+            const newWorkspace = {
+                id: newId.toString(),
+                name: newWorkspaceName,
+                users: [],
+            };
+
+            // Save the new workspace to the backend
+            await axios.post("/api/workspaces", newWorkspace);
+
+            // Update the frontend state
+            setWorkspaces([...workspaces, newWorkspace]);
+            setNewWorkspaceName("");
+        } catch (error) {
+            console.error("Error creating workspace:", error);
+        }
     };
 
     const handleWorkspaceClick = (workspace: Workspace) => {
         setSelectedWorkspace(workspace);
+        // Save the selected workspace ID to localStorage or a global state
+        localStorage.setItem("selectedWorkspaceId", workspace.id);
     };
 
-    const handleWorkspaceNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleWorkspaceNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (selectedWorkspace) {
             const updatedWorkspace = { ...selectedWorkspace, name: e.target.value };
-            setSelectedWorkspace(updatedWorkspace);
-            setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
+            try {
+                await axios.put(`/api/workspaces/${selectedWorkspace.id}`, { name: e.target.value });
+                setSelectedWorkspace(updatedWorkspace);
+                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
+            } catch (error) {
+                console.error("Error updating workspace name:", error);
+            }
         }
     };
 
-    const handleInviteUser = () => {
+    const handleInviteUser = async () => {
         if (selectedWorkspace) {
             const updatedWorkspace = { ...selectedWorkspace, users: [...selectedWorkspace.users, newUserName] };
-            setSelectedWorkspace(updatedWorkspace);
-            setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
-            setNewUserName("");
+            try {
+                await axios.post(`/api/workspaces/${selectedWorkspace.id}/invite`, { email: newUserName });
+                setSelectedWorkspace(updatedWorkspace);
+                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
+                setNewUserName("");
+            } catch (error) {
+                console.error("Error inviting user:", error);
+            }
         }
     };
 
