@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../hooks/AuthContext";
+import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -44,17 +45,19 @@ const Login: React.FC = () => {
         if (isLoginForm) {
           await authContext.login(email, password);
           navigate("/inventory");
+          toast.success("Login successful");
         } else {
           // Add your registration logic here
           if (password !== confirmPassword) {
-            alert("Passwords do not match");
+            toast.error("Passwords do not match");
             return;
           }
           await authContext.register(email, password);
           navigate("/inventory");
+          toast.success("Registration successful");
         }
       } catch (error) {
-        alert(isLoginForm ? "Login failed" : "Registration failed");
+        toast.error(isLoginForm ? "Login failed" : "Registration failed");
       }
     }
   };
@@ -63,18 +66,22 @@ const Login: React.FC = () => {
     <div className="flex min-h-screen">
       <div className="flex w-1/2 bg-white"></div>
       <div className="flex w-1/2 bg-blue-300"></div>
-      <div className="flex items-center justify-center w-full absolute inset-0">
-        <div className="flex flex-col lg:flex-row w-full max-w-3xl bg-white rounded-lg shadow-2xl z-10 overflow-hidden">
-          <div className="lg:w-1/2 p-8 flex flex-col items-center justify-center bg-blue-800">
+      <div className="absolute inset-0 flex items-center justify-center w-full">
+        <div className="z-10 flex flex-col w-full max-w-3xl overflow-hidden bg-white rounded-lg shadow-2xl lg:flex-row">
+          <div className="flex flex-col items-center justify-center p-8 bg-blue-800 lg:w-1/2">
             <img
               src="src/assets/TradeTrackLogo.png"
               alt="Company Logo"
               className="w-32 h-32 mb-4"
             />
-            <h1 className="text-4xl font-bold text-white text-center">Welcome to TradeTrack</h1>
+            <h1 className="text-4xl font-bold text-center text-white">
+              Welcome to TradeTrack
+            </h1>
           </div>
-          <div className="lg:w-1/2 p-8 flex flex-col items-center justify-center bg-white">
-            <h2 className="mb-4 text-2xl font-bold text-center text-blue-800">{isLoginForm ? "Login" : "Register"}</h2>
+          <div className="flex flex-col items-center justify-center p-8 bg-white lg:w-1/2">
+            <h2 className="mb-4 text-2xl font-bold text-center text-blue-800">
+              {isLoginForm ? "Login" : "Register"}
+            </h2>
             <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto">
               <div className="mb-4">
                 <label className="block text-gray-700">Email</label>
@@ -105,7 +112,9 @@ const Login: React.FC = () => {
               </div>
               {!isLoginForm && (
                 <div className="mb-4">
-                  <label className="block text-gray-700">Confirm Password</label>
+                  <label className="block text-gray-700">
+                    Confirm Password
+                  </label>
                   <div className="relative w-full">
                     <input
                       type={isPasswordVisible ? "text" : "password"}
@@ -133,14 +142,20 @@ const Login: React.FC = () => {
                 {isLoginForm ? (
                   <>
                     Don't have an account?{" "}
-                    <button onClick={handleRegisterButton} className="text-blue-500">
+                    <button
+                      onClick={handleRegisterButton}
+                      className="text-blue-500"
+                    >
                       Register
                     </button>
                   </>
                 ) : (
                   <>
                     Already have an account?{" "}
-                    <button onClick={handleLoginButton} className="text-blue-500">
+                    <button
+                      onClick={handleLoginButton}
+                      className="text-blue-500"
+                    >
                       Login
                     </button>
                   </>
