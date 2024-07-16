@@ -2,7 +2,6 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
 import getInventory from '../hooks/inventory';
 import { updateInventory } from '../hooks/updateInventory';
-import { configDir } from '@tauri-apps/api/path';
 
 // Define the material type
 type Material = {
@@ -51,10 +50,7 @@ export default function Checkout() {
   useEffect(() => {
     // Fetch data from the database
     async function fetchMaterials() {
-      // Replace with your actual API call
-      const response = await fetch("/api/get_products");
-      console.log(response);
-      const data = await response.json();
+      const data = await getInventory();
       setMaterials(data);
     }
     fetchMaterials();
@@ -96,6 +92,20 @@ export default function Checkout() {
   };
 
   const confirmCheckOutItems = async () => {
+    // Update the inventory with the new quantities
+    const updatedMaterials = materials.map((material) => {
+      const checkedOutItem = checkedOutItems.find((item) => item.id === material.itemID.toString());
+      if (checkedOutItem) {
+        return {
+          ...material,
+          itemQuantity: material.itemQuantity - parseInt(checkedOutItem.checkOutQuantity, 10),
+        };
+      }
+      return material;
+    });
+
+    await updateInventory(updatedMaterials);
+
     // Post checked-out items to the database
     await fetch("/api/checkout", {
       method: "POST",
@@ -104,13 +114,15 @@ export default function Checkout() {
       },
       body: JSON.stringify(checkedOutItems),
     });
+
     setCheckedOutItems([]);
+    setMaterials(updatedMaterials);
   };
 
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 p-5">
+      <div className="flex-1 ml-64 p-5"> {/* Adjusted this line */}
         <div className="p-3 bg-white rounded shadow">
           <h2 className="mb-4 text-2xl text-gray-800">Check Out Details</h2>
 
@@ -150,9 +162,7 @@ export default function Checkout() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Check Out Quantity
-                  </label>
+                  <label className="block text-gray-700">Check Out Quantity</label>
                   <input
                     type="number"
                     name="checkOutQuantity"
@@ -162,9 +172,7 @@ export default function Checkout() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Available Quantity
-                  </label>
+                  <label className="block text-gray-700">Available Quantity</label>
                   <input
                     type="number"
                     name="availableQuantity"
@@ -266,16 +274,10 @@ export default function Checkout() {
                       <td className="px-4 py-2 border-b">{item.id}</td>
                       <td className="px-4 py-2 border-b">{item.name}</td>
                       <td className="px-4 py-2 border-b">{item.location}</td>
-                      <td className="px-4 py-2 border-b">
-                        {item.checkOutQuantity}
-                      </td>
+                      <td className="px-4 py-2 border-b">{item.checkOutQuantity}</td>
                       <td className="px-4 py-2 border-b">{item.employeeId}</td>
-                      <td className="px-4 py-2 border-b">
-                        {item.employeeName}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {item.checkOutDate}
-                      </td>
+                      <td className="px-4 py-2 border-b">{item.employeeName}</td>
+                      <td className="px-4 py-2 border-b">{item.checkOutDate}</td>
                       <td className="px-4 py-2 border-b">{item.duration}</td>
                       <td className="px-4 py-2 border-b">{item.dueOn}</td>
                     </tr>
@@ -292,50 +294,44 @@ export default function Checkout() {
           )}
 
           <h3 className="mb-2 text-xl text-gray-800">Inventory</h3>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border-b">ID</th>
-                <th className="px-4 py-2 border-b">Name</th>
-                <th className="px-4 py-2 border-b">Description</th>
-                <th className="px-4 py-2 border-b">Quantity</th>
-                <th className="px-4 py-2 border-b">Status</th>
-                <th className="px-4 py-2 border-b">Size</th>
-                <th className="px-4 py-2 border-b">Type</th>
-                <th className="px-4 py-2 border-b">Check In Date</th>
-                <th className="px-4 py-2 border-b">Check Out Date</th>
-                <th className="px-4 py-2 border-b">Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              {materials.map((material) => (
-                <tr
-                  key={material.itemID}
-                  className="cursor-pointer"
-                  onClick={() => handleInventoryItemClick(material)}
-                >
-                  <td className="px-4 py-2 border-b">{material.itemID}</td>
-                  <td className="px-4 py-2 border-b">{material.itemName}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemDescription}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemQuantity}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemStatus ? "Available" : "Checked Out"}
-                  </td>
-                  <td className="px-4 py-2 border-b">{material.itemSize}</td>
-                  <td className="px-4 py-2 border-b">{material.type}</td>
-                  <td className="px-4 py-2 border-b">{material.checkInDate}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.checkOutDate}
-                  </td>
-                  <td className="px-4 py-2 border-b">{material.location}</td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Name</th>
+                  <th className="px-4 py-2 border-b">Description</th>
+                  <th className="px-4 py-2 border-b">Quantity</th>
+                  <th className="px-4 py-2 border-b">Status</th>
+                  <th className="px-4 py-2 border-b">Size</th>
+                  <th className="px-4 py-2 border-b">Type</th>
+                  <th className="px-4 py-2 border-b">Check In Date</th>
+                  <th className="px-4 py-2 border-b">Check Out Date</th>
+                  <th className="px-4 py-2 border-b">Location</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {materials.map((material) => (
+                  <tr
+                    key={material.itemID}
+                    className="cursor-pointer"
+                    onClick={() => handleInventoryItemClick(material)}
+                  >
+                    <td className="px-4 py-2 border-b">{material.itemID}</td>
+                    <td className="px-4 py-2 border-b">{material.itemName}</td>
+                    <td className="px-4 py-2 border-b">{material.itemDescription}</td>
+                    <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
+                    <td className="px-4 py-2 border-b">{material.itemStatus ? "Available" : "Checked Out"}</td>
+                    <td className="px-4 py-2 border-b">{material.itemSize}</td>
+                    <td className="px-4 py-2 border-b">{material.type}</td>
+                    <td className="px-4 py-2 border-b">{material.checkInDate}</td>
+                    <td className="px-4 py-2 border-b">{material.checkOutDate}</td>
+                    <td className="px-4 py-2 border-b">{material.location}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

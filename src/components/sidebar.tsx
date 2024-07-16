@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes, faUser, faWarehouse, faSignInAlt, faList, faBriefcase, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes, faUser, faWarehouse, faSignInAlt, faList, faBriefcase, faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -94,7 +94,7 @@ export default function Sidebar() {
               onClick={handleLogout}
               className="p-4 mb-2 cursor-pointer text-white hover:bg-red-700 rounded-md w-full flex items-center" // Increased padding
             >
-              <FontAwesomeIcon icon={faSignOutAlt} className="mr-3" /> LOG OUT {/* Increased margin */}
+              <FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight} className="mr-3 scale-x-[-1]" /> LOG OUT {/* Increased margin */}
             </button>
           </div>
         </div>

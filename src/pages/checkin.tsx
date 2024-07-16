@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
-import getInventory from "../hooks/inventory";
+import getInventory from '../hooks/inventory';
+import { updateInventory } from '../hooks/updateInventory';
 
 // Define the material type
 type Material = {
@@ -20,11 +21,12 @@ type Material = {
 type CheckInItem = {
   id: string;
   name: string;
-  quantity: string;
+  location: string;
+  checkInQuantity: string;
+  availableQuantity: string;
   employeeId: string;
   employeeName: string;
   checkInDate: string;
-  location: string;
 };
 
 export default function Checkin() {
@@ -33,11 +35,12 @@ export default function Checkin() {
   const [newCheckIn, setNewCheckIn] = useState<CheckInItem>({
     id: "",
     name: "",
-    quantity: "",
+    location: "",
+    checkInQuantity: "",
+    availableQuantity: "",
     employeeId: "",
     employeeName: "",
     checkInDate: "",
-    location: "",
   });
 
   useEffect(() => {
@@ -63,11 +66,12 @@ export default function Checkin() {
     setNewCheckIn({
       id: "",
       name: "",
-      quantity: "",
+      location: "",
+      checkInQuantity: "",
+      availableQuantity: "",
       employeeId: "",
       employeeName: "",
       checkInDate: "",
-      location: "",
     });
   };
 
@@ -77,10 +81,25 @@ export default function Checkin() {
       id: material.itemID.toString(),
       name: material.itemName,
       location: material.location,
+      availableQuantity: material.itemQuantity.toString(),
     }));
   };
 
   const confirmCheckInItems = async () => {
+    // Update the inventory with the new quantities
+    const updatedMaterials = materials.map((material) => {
+      const checkedInItem = checkedInItems.find((item) => item.id === material.itemID.toString());
+      if (checkedInItem) {
+        return {
+          ...material,
+          itemQuantity: material.itemQuantity + parseInt(checkedInItem.checkInQuantity, 10),
+        };
+      }
+      return material;
+    });
+
+    await updateInventory(updatedMaterials);
+
     // Post checked-in items to the database
     await fetch("/api/checkin", {
       method: "POST",
@@ -89,7 +108,9 @@ export default function Checkin() {
       },
       body: JSON.stringify(checkedInItems),
     });
+
     setCheckedInItems([]);
+    setMaterials(updatedMaterials);
   };
 
   return (
@@ -97,150 +118,149 @@ export default function Checkin() {
       <Sidebar />
       <div className="flex-1 p-5 pt-16 md:ml-64">
         <div className="p-3 bg-white rounded shadow">
-          <h2 className="mb-4 text-2xl text-gray-800">Check In</h2>
+          <h2 className="mb-4 text-2xl text-gray-800">Check In Details</h2>
 
-          <div className="mt-4 mb-4">
-            <h3 className="mb-2 text-xl text-gray-800">
-              Check In New Material
-            </h3>
-            <form onSubmit={handleCheckIn} className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700">ID</label>
-                <input
-                  type="text"
-                  name="id"
-                  placeholder="ID"
-                  value={newCheckIn.id}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  disabled
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  value={newCheckIn.name}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  disabled
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Quantity</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  placeholder="Quantity"
-                  value={newCheckIn.quantity}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Employee ID</label>
-                <input
-                  type="text"
-                  name="employeeId"
-                  placeholder="Employee ID"
-                  value={newCheckIn.employeeId}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Employee Name</label>
-                <input
-                  type="text"
-                  name="employeeName"
-                  placeholder="Employee Name"
-                  value={newCheckIn.employeeName}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Check In Date</label>
-                <input
-                  type="date"
-                  name="checkInDate"
-                  value={newCheckIn.checkInDate}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Location</label>
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Location"
-                  value={newCheckIn.location}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  disabled
-                />
-              </div>
-              <button
-                type="submit"
-                className="col-span-2 px-4 py-2 text-white bg-blue-500 rounded"
-              >
-                Check In Material
-              </button>
-            </form>
+          <div className="grid grid-cols-2 gap-4">
+            {/* Material Details */}
+            <div>
+              <h3 className="mb-2 text-xl text-gray-800">Material Details</h3>
+              <form onSubmit={handleCheckIn}>
+                <div className="mb-4">
+                  <label className="block text-gray-700">ID</label>
+                  <input
+                    type="text"
+                    name="id"
+                    value={newCheckIn.id}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newCheckIn.name}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={newCheckIn.location}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Check In Quantity</label>
+                  <input
+                    type="number"
+                    name="checkInQuantity"
+                    value={newCheckIn.checkInQuantity}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Available Quantity</label>
+                  <input
+                    type="number"
+                    name="availableQuantity"
+                    value={newCheckIn.availableQuantity}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                    disabled
+                  />
+                </div>
+              </form>
+            </div>
+
+            {/* Check In From */}
+            <div>
+              <h3 className="mb-2 text-xl text-gray-800">Check In From</h3>
+              <form>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Employee ID</label>
+                  <input
+                    type="text"
+                    name="employeeId"
+                    value={newCheckIn.employeeId}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Employee Name</label>
+                  <input
+                    type="text"
+                    name="employeeName"
+                    value={newCheckIn.employeeName}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Check In Date</label>
+                  <input
+                    type="date"
+                    name="checkInDate"
+                    value={newCheckIn.checkInDate}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </form>
+            </div>
           </div>
 
-          <h3 className="mb-2 text-xl text-gray-800">Checked In Materials</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full mb-4 bg-white">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2 border-b">ID</th>
-                  <th className="px-4 py-2 border-b">Name</th>
-                  <th className="px-4 py-2 border-b">Quantity</th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Employee ID
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Employee Name
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Check In Date
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Location
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {checkedInItems.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-4 py-2 border-b">{item.id}</td>
-                    <td className="px-4 py-2 border-b">{item.name}</td>
-                    <td className="px-4 py-2 border-b">{item.quantity}</td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {item.employeeId}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {item.employeeName}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {item.checkInDate}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {item.location}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-4">
+            <button
+              onClick={handleCheckIn}
+              className="px-4 py-2 text-white bg-blue-500 rounded"
+            >
+              Check In Material
+            </button>
           </div>
 
           {checkedInItems.length > 0 && (
             <div className="mt-4">
+              <h3 className="mb-2 text-xl text-gray-800">Checked In Items</h3>
+              <table className="min-w-full mb-4 bg-white">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border-b">ID</th>
+                    <th className="px-4 py-2 border-b">Name</th>
+                    <th className="px-4 py-2 border-b">Location</th>
+                    <th className="px-4 py-2 border-b">Check In Quantity</th>
+                    <th className="px-4 py-2 border-b">Employee ID</th>
+                    <th className="px-4 py-2 border-b">Employee Name</th>
+                    <th className="px-4 py-2 border-b">Check In Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {checkedInItems.map((item, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border-b">{item.id}</td>
+                      <td className="px-4 py-2 border-b">{item.name}</td>
+                      <td className="px-4 py-2 border-b">{item.location}</td>
+                      <td className="px-4 py-2 border-b">
+                        {item.checkInQuantity}
+                      </td>
+                      <td className="px-4 py-2 border-b">{item.employeeId}</td>
+                      <td className="px-4 py-2 border-b">
+                        {item.employeeName}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {item.checkInDate}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
               <button
                 onClick={confirmCheckInItems}
                 className="px-4 py-2 text-white bg-blue-500 rounded"
@@ -251,82 +271,50 @@ export default function Checkin() {
           )}
 
           <h3 className="mb-2 text-xl text-gray-800">Inventory</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2 border-b">ID</th>
-                  <th className="px-4 py-2 border-b">Name</th>
-                  <th className="px-4 py-2 border-b">Quantity</th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Description
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Status
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Size
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Type
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Check In Date
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Check Out Date
-                  </th>
-                  <th className="hidden px-4 py-2 border-b lg:table-cell">
-                    Location
-                  </th>
-                  <th className="px-4 py-2 border-b">Actions</th>
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border-b">ID</th>
+                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-2 border-b">Description</th>
+                <th className="px-4 py-2 border-b">Quantity</th>
+                <th className="px-4 py-2 border-b">Status</th>
+                <th className="px-4 py-2 border-b">Size</th>
+                <th className="px-4 py-2 border-b">Type</th>
+                <th className="px-4 py-2 border-b">Check In Date</th>
+                <th className="px-4 py-2 border-b">Check Out Date</th>
+                <th className="px-4 py-2 border-b">Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {materials.map((material) => (
+                <tr
+                  key={material.itemID}
+                  className="cursor-pointer"
+                  onClick={() => handleInventoryItemClick(material)}
+                >
+                  <td className="px-4 py-2 border-b">{material.itemID}</td>
+                  <td className="px-4 py-2 border-b">{material.itemName}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemDescription}
+                  </td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemQuantity}
+                  </td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemStatus ? "Available" : "Checked Out"}
+                  </td>
+                  <td className="px-4 py-2 border-b">{material.itemSize}</td>
+                  <td className="px-4 py-2 border-b">{material.type}</td>
+                  <td className="px-4 py-2 border-b">{material.checkInDate}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.checkOutDate}
+                  </td>
+                  <td className="px-4 py-2 border-b">{material.location}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {materials.map((material) => (
-                  <tr
-                    key={material.itemID}
-                    className="cursor-pointer"
-                  >
-                    <td className="px-4 py-2 border-b">{material.itemID}</td>
-                    <td className="px-4 py-2 border-b">{material.itemName}</td>
-                    <td className="px-4 py-2 border-b">
-                      {material.itemQuantity}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.itemDescription}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.itemStatus ? "Available" : "Checked Out"}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.itemSize}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.type}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.checkInDate}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.checkOutDate}
-                    </td>
-                    <td className="hidden px-4 py-2 border-b lg:table-cell">
-                      {material.location}
-                    </td>
-                    <td className="px-4 py-2 border-b">
-                      <button
-                        className="px-4 py-2 text-white bg-blue-500 rounded"
-                        onClick={() => handleInventoryItemClick(material)}
-                      >
-                        Add to Check-In
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
