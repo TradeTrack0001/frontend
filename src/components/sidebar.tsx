@@ -7,8 +7,9 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path: string) => {
     setIsSidebarOpen(false); // Close sidebar on navigation
+    console.log(path);
     navigate(path);
   };
 

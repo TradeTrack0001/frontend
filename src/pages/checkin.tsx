@@ -43,7 +43,6 @@ export default function Checkin() {
   useEffect(() => {
     // Fetch data from the database
     async function fetchMaterials() {
-      // Replace with your actual API call
       const data = await getInventory();
       setMaterials(data);
     }
@@ -94,9 +93,9 @@ export default function Checkin() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen lg:flex-row">
+    <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 p-5 mt-16 lg:mt-0">
+      <div className="flex-1 p-5 pt-16 md:ml-64">
         <div className="p-3 bg-white rounded shadow">
           <h2 className="mb-4 text-2xl text-gray-800">Check In</h2>
 
@@ -114,6 +113,7 @@ export default function Checkin() {
                   value={newCheckIn.id}
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
+                  disabled
                 />
               </div>
               <div>
@@ -125,6 +125,7 @@ export default function Checkin() {
                   value={newCheckIn.name}
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
+                  disabled
                 />
               </div>
               <div>
@@ -136,6 +137,7 @@ export default function Checkin() {
                   value={newCheckIn.quantity}
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
+                  required
                 />
               </div>
               <div>
@@ -179,6 +181,7 @@ export default function Checkin() {
                   value={newCheckIn.location}
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
+                  disabled
                 />
               </div>
               <button
@@ -191,48 +194,50 @@ export default function Checkin() {
           </div>
 
           <h3 className="mb-2 text-xl text-gray-800">Checked In Materials</h3>
-          <table className="min-w-full mb-4 bg-white">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border-b">ID</th>
-                <th className="px-4 py-2 border-b">Name</th>
-                <th className="px-4 py-2 border-b">Quantity</th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Employee ID
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Employee Name
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Check In Date
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Location
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {checkedInItems.map((item, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2 border-b">{item.id}</td>
-                  <td className="px-4 py-2 border-b">{item.name}</td>
-                  <td className="px-4 py-2 border-b">{item.quantity}</td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {item.employeeId}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {item.employeeName}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {item.checkInDate}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {item.location}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full mb-4 bg-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Name</th>
+                  <th className="px-4 py-2 border-b">Quantity</th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Employee ID
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Employee Name
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Check In Date
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Location
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {checkedInItems.map((item, index) => (
+                  <tr key={index}>
+                    <td className="px-4 py-2 border-b">{item.id}</td>
+                    <td className="px-4 py-2 border-b">{item.name}</td>
+                    <td className="px-4 py-2 border-b">{item.quantity}</td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {item.employeeId}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {item.employeeName}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {item.checkInDate}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {item.location}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {checkedInItems.length > 0 && (
             <div className="mt-4">
@@ -246,72 +251,82 @@ export default function Checkin() {
           )}
 
           <h3 className="mb-2 text-xl text-gray-800">Inventory</h3>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border-b">ID</th>
-                <th className="px-4 py-2 border-b">Name</th>
-                <th className="px-4 py-2 border-b">Quantity</th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Description
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Status
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Size
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Type
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Check In Date
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Check Out Date
-                </th>
-                <th className="hidden px-4 py-2 border-b lg:table-cell">
-                  Location
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {materials.map((material) => (
-                <tr
-                  key={material.itemID}
-                  className="cursor-pointer"
-                  onClick={() => handleInventoryItemClick(material)}
-                >
-                  <td className="px-4 py-2 border-b">{material.itemID}</td>
-                  <td className="px-4 py-2 border-b">{material.itemName}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemQuantity}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.itemDescription}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.itemStatus ? "Available" : "Checked Out"}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.itemSize}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.type}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.checkInDate}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.checkOutDate}
-                  </td>
-                  <td className="hidden px-4 py-2 border-b lg:table-cell">
-                    {material.location}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Name</th>
+                  <th className="px-4 py-2 border-b">Quantity</th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Description
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Status
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Size
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Type
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Check In Date
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Check Out Date
+                  </th>
+                  <th className="hidden px-4 py-2 border-b lg:table-cell">
+                    Location
+                  </th>
+                  <th className="px-4 py-2 border-b">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {materials.map((material) => (
+                  <tr
+                    key={material.itemID}
+                    className="cursor-pointer"
+                  >
+                    <td className="px-4 py-2 border-b">{material.itemID}</td>
+                    <td className="px-4 py-2 border-b">{material.itemName}</td>
+                    <td className="px-4 py-2 border-b">
+                      {material.itemQuantity}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.itemDescription}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.itemStatus ? "Available" : "Checked Out"}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.itemSize}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.type}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.checkInDate}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.checkOutDate}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b lg:table-cell">
+                      {material.location}
+                    </td>
+                    <td className="px-4 py-2 border-b">
+                      <button
+                        className="px-4 py-2 text-white bg-blue-500 rounded"
+                        onClick={() => handleInventoryItemClick(material)}
+                      >
+                        Add to Check-In
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
