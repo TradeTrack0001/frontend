@@ -6,6 +6,7 @@ import useAddInventory from "../hooks/addInventory";
 import { AuthContext } from "../hooks/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { updateInventory } from "../hooks/updateInventory";
 
 // Define the material type
 type Material = {
@@ -66,7 +67,7 @@ export default function Inventory() {
     itemName: "",
     itemDescription: "",
     itemQuantity: 0,
-    itemStatus: false,
+    itemStatus: true, // Default to true for "Available"
     itemSize: "",
     type: "",
     checkInDate: "",
@@ -74,6 +75,7 @@ export default function Inventory() {
     location: "",
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false); // To track if we're editing an item
   const [tempMaterials, setTempMaterials] = useState<Material[]>([]);
 
   useEffect(() => {
@@ -88,51 +90,83 @@ export default function Inventory() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setNewMaterial((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : name === "itemQuantity" || name === "itemID"
-          ? parseInt(value, 10)
-          : value,
-    }));
+    setNewMaterial((prev) => {
+      const updatedMaterial = {
+        ...prev,
+        [name]:
+          type === "checkbox"
+            ? checked
+            : name === "itemQuantity" || name === "itemID"
+            ? parseInt(value, 10)
+            : value,
+      };
+
+      // Automatically set status based on quantity
+      if (name === "itemQuantity") {
+        updatedMaterial.itemStatus = parseInt(value, 10) > 0;
+      }
+
+      return updatedMaterial;
+    });
   };
 
-  const addTempMaterial = async (e: FormEvent) => {
+  const addOrUpdateMaterial = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/add_product", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newMaterial),
-      });
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Product added:", result);
+      let response;
+      if (isEditMode) {
+        // Update existing item
+        await updateInventory([newMaterial]);
+        setMaterials((prev) =>
+          prev.map((material) =>
+            material.itemID === newMaterial.itemID ? newMaterial : material
+          )
+        );
+        toast.success("Material updated successfully");
       } else {
-        console.error("Error adding product:", response.statusText);
+        // Add new item
+        response = await fetch("/api/add_product", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newMaterial),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Product added:", result);
+          setTempMaterials((prev) => [...prev, newMaterial]);
+          toast.success("Material added successfully");
+        } else {
+          console.error("Error adding product:", response.statusText);
+        }
       }
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error adding/updating product:", error);
     }
 
-    setTempMaterials((prev) => [...prev, newMaterial]);
+    // Reset form and state
     setNewMaterial({
       itemID: 0,
       itemName: "",
       itemDescription: "",
       itemQuantity: 0,
-      itemStatus: false,
+      itemStatus: true, // Default to true for "Available"
       itemSize: "",
       type: "",
       checkInDate: "",
       checkOutDate: "N/A",
       location: "",
     });
-    toast.success("Material added successfully");
+    setIsFormVisible(false);
+    setIsEditMode(false);
+  };
+
+  const handleEdit = (material: Material) => {
+    setNewMaterial(material);
+    setIsFormVisible(true);
+    setIsEditMode(true);
   };
 
   const confirmNewItems = async () => {
@@ -148,7 +182,10 @@ export default function Inventory() {
       <div className="flex-1 p-5 pt-16 md:ml-64">
         <div className="absolute top-5 right-5">
           <button
-            onClick={() => setIsFormVisible(!isFormVisible)}
+            onClick={() => {
+              setIsFormVisible(!isFormVisible);
+              setIsEditMode(false); // Ensure we're not in edit mode when adding new item
+            }}
             className={`bg-blue-500 text-white px-4 py-2 rounded-full mb-4 mt-20 ${
               isFormVisible ? "h-10 w-10" : "h-16 w-16"
             }`}
@@ -160,10 +197,10 @@ export default function Inventory() {
           {isFormVisible && (
             <div className="mt-4 mb-4">
               <h3 className="mb-2 text-xl text-gray-800 border">
-                Add New Material
+                {isEditMode ? "Edit Material" : "Add New Material"}
               </h3>
               <form
-                onSubmit={addTempMaterial}
+                onSubmit={addOrUpdateMaterial}
                 className="grid grid-cols-2 gap-4"
               >
                 <div>
@@ -175,6 +212,7 @@ export default function Inventory() {
                     value={newMaterial.itemID}
                     onChange={handleChange}
                     className="w-full p-2 border rounded"
+                    disabled={isEditMode} // Disable ID field when editing
                   />
                 </div>
                 <div>
@@ -217,6 +255,7 @@ export default function Inventory() {
                     checked={newMaterial.itemStatus}
                     onChange={handleChange}
                     className="mr-2"
+                    disabled={newMaterial.itemQuantity > 0} // Disable checkbox if quantity > 0
                   />
                   <label className="text-gray-700">Status (Available)</label>
                 </div>
@@ -279,7 +318,7 @@ export default function Inventory() {
                   type="submit"
                   className="col-span-2 px-4 py-2 text-white bg-blue-500 rounded"
                 >
-                  Add New Material Item
+                  {isEditMode ? "Update Material" : "Add New Material"}
                 </button>
               </form>
             </div>
@@ -368,30 +407,31 @@ export default function Inventory() {
                     <th className="px-4 py-2 border border-black">Quantity</th>
                     <th className="px-4 py-2 border border-black">Status</th>
                     <th className="px-4 py-2 border border-black">Size</th>
-                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">
                       Type
                     </th>
-                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">
                       Check In Date
                     </th>
-                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">
                       Check Out Date
                     </th>
-                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    <th className="px-4 py-2 border border-black hidden md:table-cell">
                       Location
                     </th>
+                    <th className="px-4 py-2 border border-black">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {materials.map((material, index) => (
                     <tr key={index}>
-                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">
                         {material.itemID}
                       </td>
                       <td className="px-4 py-2 border border-black">
                         {material.itemName}
                       </td>
-                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">
                         {material.itemDescription}
                       </td>
                       <td className="px-4 py-2 border border-black">
@@ -403,17 +443,25 @@ export default function Inventory() {
                       <td className="px-4 py-2 border border-black">
                         {material.itemSize}
                       </td>
-                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">
                         {material.type}
                       </td>
-                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">
                         {material.checkInDate}
                       </td>
-                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">
                         {material.checkOutDate}
                       </td>
-                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                      <td className="px-4 py-2 border border-black hidden md:table-cell">
                         {material.location}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        <button
+                          className="px-2 py-1 text-white bg-blue-500 rounded"
+                          onClick={() => handleEdit(material)}
+                        >
+                          Edit
+                        </button>
                       </td>
                     </tr>
                   ))}
