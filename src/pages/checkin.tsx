@@ -1,7 +1,8 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
 import getInventory from '../hooks/inventory';
-import { updateInventory } from '../hooks/updateInventory';
+// import { updateInventory } from '../hooks/updateInventory';
+import useCheckin from "../hooks/check-in.ts";
 
 // Define the material type
 type Material = {
@@ -98,16 +99,16 @@ export default function Checkin() {
       return material;
     });
 
-    await updateInventory(updatedMaterials);
-
+    // await updateInventory(updatedMaterials);
+    useCheckin(checkedInItems);
     // Post checked-in items to the database
-    await fetch("/api/checkin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(checkedInItems),
-    });
+    // await fetch("/api/checkin", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(checkedInItems),
+    // });
 
     setCheckedInItems([]);
     setMaterials(updatedMaterials);
