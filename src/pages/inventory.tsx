@@ -1,10 +1,13 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent, useContext } from "react";
 import Sidebar from "../components/sidebar";
 import toast from "react-hot-toast";
 import getInventory from "../hooks/inventory";
 import useAddInventory from "../hooks/addInventory";
+import { AuthContext } from "../hooks/AuthContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-// Define the material type 
+// Define the material type
 type Material = {
   itemID: number;
   itemName: string;
@@ -19,6 +22,44 @@ type Material = {
 };
 
 export default function Inventory() {
+  const authContext = useContext(AuthContext);
+  const [message, setMessage] = useState<string>("");
+  const navigate = useNavigate();
+  const auth = authContext?.auth;
+  const logout = authContext?.logout;
+
+  useEffect(() => {
+    const fetchProtectedData = async () => {
+      console.log(auth);
+      if (auth && auth.token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:2000/auth/protected",
+            {
+              headers: {
+                Authorization: `Bearer ${auth.token}`,
+              },
+            }
+          );
+          setMessage(response.data);
+        } catch (error: any) {
+          console.error("Error fetching protected data", error);
+          if (error.response && error.response.status === 401) {
+            // Token is invalid or expired, log the user out
+            if (logout) {
+              logout();
+            }
+            navigate("/");
+          }
+        }
+      } else {
+        navigate("/");
+      }
+    };
+
+    fetchProtectedData();
+  }, [auth, logout, navigate]);
+
   const [materials, setMaterials] = useState<Material[]>([]);
   const [newMaterial, setNewMaterial] = useState<Material>({
     itemID: 0,
@@ -118,8 +159,13 @@ export default function Inventory() {
         <div className="p-3 mt-16 bg-white rounded shadow">
           {isFormVisible && (
             <div className="mt-4 mb-4">
-              <h3 className="mb-2 text-xl text-gray-800 border">Add New Material</h3>
-              <form onSubmit={addTempMaterial} className="grid grid-cols-2 gap-4">
+              <h3 className="mb-2 text-xl text-gray-800 border">
+                Add New Material
+              </h3>
+              <form
+                onSubmit={addTempMaterial}
+                className="grid grid-cols-2 gap-4"
+              >
                 <div>
                   <label className="block text-gray-700">ID</label>
                   <input
@@ -241,7 +287,9 @@ export default function Inventory() {
 
           {tempMaterials.length > 0 && (
             <div className="mt-4 mb-4">
-              <h3 className="mb-2 text-xl text-gray-800">New Materials to be Added</h3>
+              <h3 className="mb-2 text-xl text-gray-800">
+                New Materials to be Added
+              </h3>
               <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
                   <thead>
@@ -261,16 +309,34 @@ export default function Inventory() {
                   <tbody>
                     {tempMaterials.map((material, index) => (
                       <tr key={index}>
-                        <td className="px-4 py-2 border-b">{material.itemID}</td>
-                        <td className="px-4 py-2 border-b">{material.itemName}</td>
-                        <td className="px-4 py-2 border-b">{material.itemDescription}</td>
-                        <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
-                        <td className="px-4 py-2 border-b">{material.itemStatus ? "Available" : "Checked Out"}</td>
-                        <td className="px-4 py-2 border-b">{material.itemSize}</td>
+                        <td className="px-4 py-2 border-b">
+                          {material.itemID}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.itemName}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.itemDescription}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.itemQuantity}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.itemStatus ? "Available" : "Checked Out"}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.itemSize}
+                        </td>
                         <td className="px-4 py-2 border-b">{material.type}</td>
-                        <td className="px-4 py-2 border-b">{material.checkInDate}</td>
-                        <td className="px-4 py-2 border-b">{material.checkOutDate}</td>
-                        <td className="px-4 py-2 border-b">{material.location}</td>
+                        <td className="px-4 py-2 border-b">
+                          {material.checkInDate}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.checkOutDate}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {material.location}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -292,31 +358,63 @@ export default function Inventory() {
               <table className="min-w-full bg-white">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">ID</th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      ID
+                    </th>
                     <th className="px-4 py-2 border border-black">Name</th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">Description</th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      Description
+                    </th>
                     <th className="px-4 py-2 border border-black">Quantity</th>
                     <th className="px-4 py-2 border border-black">Status</th>
                     <th className="px-4 py-2 border border-black">Size</th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">Type</th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">Check In Date</th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">Check Out Date</th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">Location</th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      Type
+                    </th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      Check In Date
+                    </th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      Check Out Date
+                    </th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      Location
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {materials.map((material, index) => (
                     <tr key={index}>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.itemID}</td>
-                      <td className="px-4 py-2 border border-black">{material.itemName}</td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.itemDescription}</td>
-                      <td className="px-4 py-2 border border-black">{material.itemQuantity}</td>
-                      <td className="px-4 py-2 border border-black">{material.itemStatus ? "Available" : "Checked Out"}</td>
-                      <td className="px-4 py-2 border border-black">{material.itemSize}</td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.type}</td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.checkInDate}</td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.checkOutDate}</td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">{material.location}</td>
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                        {material.itemID}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        {material.itemName}
+                      </td>
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                        {material.itemDescription}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        {material.itemQuantity}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        {material.itemStatus ? "Available" : "Checked Out"}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        {material.itemSize}
+                      </td>
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                        {material.type}
+                      </td>
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                        {material.checkInDate}
+                      </td>
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                        {material.checkOutDate}
+                      </td>
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
+                        {material.location}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
