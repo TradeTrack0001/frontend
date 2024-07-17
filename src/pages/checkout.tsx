@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
 import getInventory from '../hooks/inventory';
 import { updateInventory } from '../hooks/updateInventory';
+import useCheckOut from "../hooks/check-out";
 
 // Define the material type
 type Material = {
@@ -104,16 +105,18 @@ export default function Checkout() {
       return material;
     });
 
-    await updateInventory(updatedMaterials);
+    // await updateInventory(updatedMaterials);
+    
+    await useCheckOut(checkedOutItems);
 
     // Post checked-out items to the database
-    await fetch("/api/checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(checkedOutItems),
-    });
+    // await fetch("/api/checkout", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(checkedOutItems),
+    // });
 
     setCheckedOutItems([]);
     setMaterials(updatedMaterials);
