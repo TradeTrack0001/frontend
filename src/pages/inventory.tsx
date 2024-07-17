@@ -70,6 +70,7 @@ export default function Inventory() {
       let response;
       if (isEditMode) {
         // Update existing item
+        console.log("Updating item:", newMaterial);
         await updateInventory([newMaterial]);
         setMaterials((prev) =>
           prev.map((material) =>

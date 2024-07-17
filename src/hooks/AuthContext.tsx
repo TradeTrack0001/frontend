@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       setAuth(response.data);
       localStorage.setItem("auth", JSON.stringify(response.data));
-      console.log(response.data);
+      console.log("the token is", localStorage.getItem("auth"));
     } catch (error) {
       console.error("Login error", error);
       throw error;
