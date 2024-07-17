@@ -28,59 +28,23 @@ export default function Workspace() {
     }, []);
 
     const handleCreateWorkspace = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            // Fetch the latest workspace UUID
-            const response = await axios.get("/api/workspace/fetch-id");
-            let newId = response.data.lastUuid ? parseInt(response.data.lastUuid) + 1 : 1;
-            const newWorkspace = {
-                id: newId.toString(),
-                name: newWorkspaceName,
-                users: [],
-            };
-
-            // Save the new workspace to the backend
-            await axios.post("/api/workspaces", newWorkspace);
-
-            // Update the frontend state
-            setWorkspaces([...workspaces, newWorkspace]);
-            setNewWorkspaceName("");
-        } catch (error) {
-            console.error("Error creating workspace:", error);
-        }
+        //create a new workspace and become the admin of that workspace
     };
 
     const handleWorkspaceClick = (workspace: Workspace) => {
-        setSelectedWorkspace(workspace);
-        // Save the selected workspace ID to localStorage or a global state
-        localStorage.setItem("selectedWorkspaceId", workspace.id);
+       //display the information about this workspace
     };
 
     const handleWorkspaceNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (selectedWorkspace) {
-            const updatedWorkspace = { ...selectedWorkspace, name: e.target.value };
-            try {
-                await axios.put(`/api/workspaces/${selectedWorkspace.id}`, { name: e.target.value });
-                setSelectedWorkspace(updatedWorkspace);
-                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
-            } catch (error) {
-                console.error("Error updating workspace name:", error);
-            }
-        }
+        //change the name of your workspace
     };
 
     const handleInviteUser = async () => {
-        if (selectedWorkspace) {
-            const updatedWorkspace = { ...selectedWorkspace, users: [...selectedWorkspace.users, newUserName] };
-            try {
-                await axios.post(`/api/workspaces/${selectedWorkspace.id}/invite`, { email: newUserName });
-                setSelectedWorkspace(updatedWorkspace);
-                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
-                setNewUserName("");
-            } catch (error) {
-                console.error("Error inviting user:", error);
-            }
-        }
+        //click this button to invite another user to your workspace
+    };
+
+    const handleRemoveUser = async () => {
+        //remove the user from this workspace
     };
 
     return (
@@ -139,6 +103,7 @@ export default function Workspace() {
                                 />
                             </label>
                             <button onClick={handleInviteUser} className="bg-blue-500 text-white px-4 py-2 rounded">Invite</button>
+                            <button onClick={handleRemoveUser} className="bg-red-500 text-white px-4 py-2 rounded ml-2">Remove</button>
                         </div>
                     )}
                 </div>
