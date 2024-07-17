@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
 import axios from "axios";
 import toast from "react-hot-toast";
+import useProfile from "../hooks/proflie.ts";
 
 type Employee = {
   id: string;
@@ -60,8 +61,15 @@ export default function Profile() {
     // Fetch employees list from the database
     async function fetchEmployees() {
       try {
-        const response = await axios.get("/api/employees"); // Adjust the API endpoint as needed
-        setEmployees(response.data);
+        // const response = await axios.get("/api/employees"); // Adjust the API endpoint as needed
+        // setEmployees(response.data);
+        // if(localStorage.getItem("auth")){
+          
+        // }
+        const token = localStorage.getItem("auth");
+        console.log("here is the token", token);
+        useProfile();
+        // setEmployees(response);
       } catch (error) {
         console.error("Error fetching employees list:", error);
       }
