@@ -8,21 +8,24 @@ import Orders from "./pages/orders";
 import Workspace from "./pages/workspace";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./hooks/AuthContext";
+import { ProfileProvider } from "./hooks/proflie";
 
 function App() {
   return (
     <>
       <AuthProvider>
-        <Toaster position="bottom-right" reverseOrder={false} />
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/checkin" element={<Checkin />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/workspace" element={<Workspace />} />
-        </Routes>
+        <ProfileProvider>
+          <Toaster position="bottom-right" reverseOrder={false} />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkin" element={<Checkin />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/workspace" element={<Workspace />} />
+          </Routes>
+        </ProfileProvider>
       </AuthProvider>
     </>
   );
