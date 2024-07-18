@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
-import axios from "../utils/axiosInstance"; // Use the configured axios instance
+import axios from "axios"; // Use the configured axios instance
 import { useAuth } from "../hooks/AuthContext";
 import { useWorkspace } from "../hooks/workspace";
 import { useNavigate } from "react-router-dom";

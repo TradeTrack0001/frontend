@@ -18,7 +18,6 @@ export const updateProfile = async (authToken: any, data: any) => {
         name,
         email,
         password,
-        isAdmin,
         companyEmail,
       },
       {

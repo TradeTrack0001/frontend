@@ -55,7 +55,7 @@ export default function Profile() {
         const updateEmployee = (data: any) => {
           setEmployee({
             id: data.id,
-            name: data.name&&"",
+            name: data.name,
             email: data.email,
             password: data.password,
             isAdmin: data.role === "ADMIN",

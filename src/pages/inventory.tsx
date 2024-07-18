@@ -33,31 +33,31 @@ export default function Inventory() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchProtectedData = async () => {
-      if (auth && auth.token) {
-        try {
-          const response = await axios.get(
-            "http://localhost:2000/auth/protected",
-            {
-              headers: {
-                Authorization: `Bearer ${auth.token}`,
-              },
-            }
-          );
-          setMessage(response.data);
-        } catch (error: any) {
-          console.error("Error fetching protected data", error);
-          if (error.response && error.response.status === 401) {
-            if (logout) {
-              logout();
-            }
-            navigate("/");
-          }
-        }
-      } else {
-        navigate("/");
-      }
-    };
+    // const fetchProtectedData = async () => {
+    //   if (auth && auth.token) {
+    //     try {
+    //       const response = await axios.get(
+    //         "http://localhost:2000/auth/protected",
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${auth.token}`,
+    //           },
+    //         }
+    //       );
+    //       setMessage(response.data);
+    //     } catch (error: any) {
+    //       console.error("Error fetching protected data", error);
+    //       if (error.response && error.response.status === 401) {
+    //         if (logout) {
+    //           logout();
+    //         }
+    //         navigate("/");
+    //       }
+    //     }
+    //   } else {
+    //     navigate("/");
+    //   }
+    // };
 
     const fetchCurrentWorkspace = async () => {
       if (auth && auth.token) {
@@ -78,7 +78,7 @@ export default function Inventory() {
       }
     };
 
-    fetchProtectedData();
+    // fetchProtectedData();
     fetchCurrentWorkspace();
   }, [auth, logout, navigate]);
 
