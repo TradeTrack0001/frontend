@@ -1,7 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
-import getInventory from '../hooks/inventory';
-import { updateInventory } from '../hooks/updateInventory';
+import getInventory from "../hooks/inventory";
 import useCheckOut from "../hooks/check-out";
 
 // Define the material type
@@ -47,15 +46,23 @@ export default function Checkout() {
     duration: "",
     dueOn: "",
   });
+  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch data from the database
-    async function fetchMaterials() {
-      const data = await getInventory();
-      setMaterials(data);
+    // Fetch workspaceId from local storage
+    const storedWorkspaceId = localStorage.getItem("workspaceId");
+    if (storedWorkspaceId) {
+      setWorkspaceId(storedWorkspaceId);
+      fetchMaterials(storedWorkspaceId); // Fetch data based on workspaceId
+    } else {
+      setWorkspaceId(null);
     }
-    fetchMaterials();
   }, []);
+
+  const fetchMaterials = async (workspaceId: string) => {
+    const data = await getInventory(workspaceId); // Adjust your hook to accept workspaceId
+    setMaterials(data);
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,22 +112,25 @@ export default function Checkout() {
       return material;
     });
 
-    // await updateInventory(updatedMaterials);
-    
     await useCheckOut(checkedOutItems);
-
-    // Post checked-out items to the database
-    // await fetch("/api/checkout", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(checkedOutItems),
-    // });
 
     setCheckedOutItems([]);
     setMaterials(updatedMaterials);
   };
+
+  if (!workspaceId) {
+    return (
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <div className="flex-1 p-5 pt-16 md:ml-64">
+          <div className="p-3 bg-white rounded shadow">
+            <h2 className="mb-4 text-2xl text-gray-800">Workspace Not Found</h2>
+            <p className="text-gray-700">Create or join a workspace to get started.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">

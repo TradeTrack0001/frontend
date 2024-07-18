@@ -1,8 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
-import getInventory from '../hooks/inventory';
-// import { updateInventory } from '../hooks/updateInventory';
-import useCheckin from "../hooks/check-in.ts";
+import getInventory from "../hooks/inventory";
+import useCheckin from "../hooks/check-in";
 
 // Define the material type
 type Material = {
@@ -43,15 +42,23 @@ export default function Checkin() {
     employeeName: "",
     checkInDate: "",
   });
+  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch data from the database
-    async function fetchMaterials() {
-      const data = await getInventory();
-      setMaterials(data);
+    // Fetch workspaceId from local storage
+    const storedWorkspaceId = localStorage.getItem("workspaceId");
+    if (storedWorkspaceId) {
+      setWorkspaceId(storedWorkspaceId);
+      fetchMaterials(storedWorkspaceId); // Fetch data based on workspaceId
+    } else {
+      setWorkspaceId(null);
     }
-    fetchMaterials();
   }, []);
+
+  const fetchMaterials = async (workspaceId: string) => {
+    const data = await getInventory(workspaceId); // Adjust your hook to accept workspaceId
+    setMaterials(data);
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -99,20 +106,25 @@ export default function Checkin() {
       return material;
     });
 
-    // await updateInventory(updatedMaterials);
     useCheckin(checkedInItems);
-    // Post checked-in items to the database
-    // await fetch("/api/checkin", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(checkedInItems),
-    // });
 
     setCheckedInItems([]);
     setMaterials(updatedMaterials);
   };
+
+  if (!workspaceId) {
+    return (
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <div className="flex-1 p-5 pt-16 md:ml-64">
+          <div className="p-3 bg-white rounded shadow">
+            <h2 className="mb-4 text-2xl text-gray-800">Workspace Not Found</h2>
+            <p className="text-gray-700">Create or join a workspace to get started.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -248,16 +260,10 @@ export default function Checkin() {
                       <td className="px-4 py-2 border-b">{item.id}</td>
                       <td className="px-4 py-2 border-b">{item.name}</td>
                       <td className="px-4 py-2 border-b">{item.location}</td>
-                      <td className="px-4 py-2 border-b">
-                        {item.checkInQuantity}
-                      </td>
+                      <td className="px-4 py-2 border-b">{item.checkInQuantity}</td>
                       <td className="px-4 py-2 border-b">{item.employeeId}</td>
-                      <td className="px-4 py-2 border-b">
-                        {item.employeeName}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {item.checkInDate}
-                      </td>
+                      <td className="px-4 py-2 border-b">{item.employeeName}</td>
+                      <td className="px-4 py-2 border-b">{item.checkInDate}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -296,21 +302,13 @@ export default function Checkin() {
                 >
                   <td className="px-4 py-2 border-b">{material.itemID}</td>
                   <td className="px-4 py-2 border-b">{material.itemName}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemDescription}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemQuantity}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemStatus ? "Available" : "Checked Out"}
-                  </td>
+                  <td className="px-4 py-2 border-b">{material.itemDescription}</td>
+                  <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
+                  <td className="px-4 py-2 border-b">{material.itemStatus ? "Available" : "Checked Out"}</td>
                   <td className="px-4 py-2 border-b">{material.itemSize}</td>
                   <td className="px-4 py-2 border-b">{material.type}</td>
                   <td className="px-4 py-2 border-b">{material.checkInDate}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.checkOutDate}
-                  </td>
+                  <td className="px-4 py-2 border-b">{material.checkOutDate}</td>
                   <td className="px-4 py-2 border-b">{material.location}</td>
                 </tr>
               ))}

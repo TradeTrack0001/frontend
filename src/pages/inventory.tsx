@@ -29,8 +29,7 @@ export default function Inventory() {
   const auth = authContext?.auth;
   const logout = authContext?.logout;
 
-  // Assuming you have a context or state to get the current workspace ID
-  const workspaceId = authContext?.workspaceId;
+  const [workspaceId, setWorkspaceId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchProtectedData = async () => {
@@ -59,7 +58,27 @@ export default function Inventory() {
       }
     };
 
+    const fetchCurrentWorkspace = async () => {
+      if (auth && auth.token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:2000/api/current_workspace",
+            {
+              headers: {
+                Authorization: `Bearer ${auth.token}`,
+              },
+            }
+          );
+          setWorkspaceId(response.data.currentWorkspace?.id || null);
+        } catch (error) {
+          console.error("Error fetching current workspace", error);
+          navigate("/");
+        }
+      }
+    };
+
     fetchProtectedData();
+    fetchCurrentWorkspace();
   }, [auth, logout, navigate]);
 
   const [materials, setMaterials] = useState<Material[]>([]);
