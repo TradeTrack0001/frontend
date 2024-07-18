@@ -1,12 +1,12 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useContext } from "react";
 import Sidebar from "../components/sidebar";
 import toast from "react-hot-toast";
-import getInventory from "../hooks/inventory";
 import useAddInventory from "../hooks/addInventory";
 import { AuthContext } from "../hooks/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { updateInventory } from "../hooks/updateInventory";
+import { useWorkspace } from "../hooks/workspace";
 
 // Define the material type
 type Material = {
@@ -29,7 +29,7 @@ export default function Inventory() {
   const navigate = useNavigate();
   const auth = authContext?.auth;
   const logout = authContext?.logout;
-
+  const { getInventory } = useWorkspace();
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export default function Inventory() {
     // Fetch data from the database
     async function fetchMaterials() {
       const data: Material[] = await getInventory();
-      setMaterials(data);
+      setMaterials(data.inventoryItems);
     }
     fetchMaterials();
   }, []);
@@ -194,7 +194,9 @@ export default function Inventory() {
     setTempMaterials([]);
     setIsFormVisible(false); // Hide form after adding materials
   };
-
+  useEffect(() => {
+    console.log("mats:", materials.inventoryItems);
+  }, [materials]);
   if (!workspaceId) {
     return (
       <div>

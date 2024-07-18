@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Sidebar from "../components/sidebar";
-import getInventory from "../hooks/inventory";
 import useCheckin from "../hooks/check-in";
+import { useWorkspace } from "../hooks/workspace";
 
 // Define the material type
 type Material = {
@@ -30,6 +30,7 @@ type CheckInItem = {
 };
 
 export default function Checkin() {
+  const { getInventory } = useWorkspace();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [checkedInItems, setCheckedInItems] = useState<CheckInItem[]>([]);
   const [newCheckIn, setNewCheckIn] = useState<CheckInItem>({
@@ -56,7 +57,7 @@ export default function Checkin() {
   }, []);
 
   const fetchMaterials = async (workspaceId: string) => {
-    const data = await getInventory(workspaceId); // Adjust your hook to accept workspaceId
+    const data = await getInventory(); // Adjust your hook to accept workspaceId
     setMaterials(data);
   };
 
@@ -96,11 +97,14 @@ export default function Checkin() {
   const confirmCheckInItems = async () => {
     // Update the inventory with the new quantities
     const updatedMaterials = materials.map((material) => {
-      const checkedInItem = checkedInItems.find((item) => item.id === material.itemID.toString());
+      const checkedInItem = checkedInItems.find(
+        (item) => item.id === material.itemID.toString()
+      );
       if (checkedInItem) {
         return {
           ...material,
-          itemQuantity: material.itemQuantity + parseInt(checkedInItem.checkInQuantity, 10),
+          itemQuantity:
+            material.itemQuantity + parseInt(checkedInItem.checkInQuantity, 10),
         };
       }
       return material;
@@ -119,7 +123,9 @@ export default function Checkin() {
         <div className="flex-1 p-5 pt-16 md:ml-64">
           <div className="p-3 bg-white rounded shadow">
             <h2 className="mb-4 text-2xl text-gray-800">Workspace Not Found</h2>
-            <p className="text-gray-700">Create or join a workspace to get started.</p>
+            <p className="text-gray-700">
+              Create or join a workspace to get started.
+            </p>
           </div>
         </div>
       </div>
@@ -169,7 +175,9 @@ export default function Checkin() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Check In Quantity</label>
+                  <label className="block text-gray-700">
+                    Check In Quantity
+                  </label>
                   <input
                     type="number"
                     name="checkInQuantity"
@@ -179,7 +187,9 @@ export default function Checkin() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Available Quantity</label>
+                  <label className="block text-gray-700">
+                    Available Quantity
+                  </label>
                   <input
                     type="number"
                     name="availableQuantity"
@@ -260,9 +270,13 @@ export default function Checkin() {
                       <td className="px-4 py-2 border-b">{item.id}</td>
                       <td className="px-4 py-2 border-b">{item.name}</td>
                       <td className="px-4 py-2 border-b">{item.location}</td>
-                      <td className="px-4 py-2 border-b">{item.checkInQuantity}</td>
+                      <td className="px-4 py-2 border-b">
+                        {item.checkInQuantity}
+                      </td>
                       <td className="px-4 py-2 border-b">{item.employeeId}</td>
-                      <td className="px-4 py-2 border-b">{item.employeeName}</td>
+                      <td className="px-4 py-2 border-b">
+                        {item.employeeName}
+                      </td>
                       <td className="px-4 py-2 border-b">{item.checkInDate}</td>
                     </tr>
                   ))}
@@ -302,13 +316,21 @@ export default function Checkin() {
                 >
                   <td className="px-4 py-2 border-b">{material.itemID}</td>
                   <td className="px-4 py-2 border-b">{material.itemName}</td>
-                  <td className="px-4 py-2 border-b">{material.itemDescription}</td>
-                  <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
-                  <td className="px-4 py-2 border-b">{material.itemStatus ? "Available" : "Checked Out"}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemDescription}
+                  </td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemQuantity}
+                  </td>
+                  <td className="px-4 py-2 border-b">
+                    {material.itemStatus ? "Available" : "Checked Out"}
+                  </td>
                   <td className="px-4 py-2 border-b">{material.itemSize}</td>
                   <td className="px-4 py-2 border-b">{material.type}</td>
                   <td className="px-4 py-2 border-b">{material.checkInDate}</td>
-                  <td className="px-4 py-2 border-b">{material.checkOutDate}</td>
+                  <td className="px-4 py-2 border-b">
+                    {material.checkOutDate}
+                  </td>
                   <td className="px-4 py-2 border-b">{material.location}</td>
                 </tr>
               ))}
