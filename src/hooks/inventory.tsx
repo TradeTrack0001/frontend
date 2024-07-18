@@ -17,7 +17,8 @@ export default async function getInventory() {
     checkOutDate: any;
     location: any;
   }[] = [];
-  const url = `${baseUrl}/workspace/workspaces/${currentWorkspace.id}/inventory`;
+  if (!currentWorkspace) return;
+  const url = `${baseUrl}/workspace/workspaces/${currentWorkspace?.id}/inventory`;
 
   try {
     const res = await axios.get(url);
