@@ -42,7 +42,7 @@ export default function WorkspacePage() {
     try {
       const response = await axios.post(
         "/api/create_workspace",
-        { name: newWorkspaceName, adminId: auth?.user?.id },
+        { name: newWorkspaceName, adminId: auth?.user.id },
         { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
       setWorkspaces([...workspaces, response.data.workspace]);
@@ -62,7 +62,7 @@ export default function WorkspacePage() {
         await axios.post(
           "/api/invite",
           { email: newUserName, workspaceId: selectedWorkspace.id },
-          { headers: { Authorization: `Bearer ${auth.token}` } }
+          { headers: { Authorization: `Bearer ${auth?.token}` } }
         );
         setNewUserName("");
       } catch (error) {
@@ -76,10 +76,10 @@ export default function WorkspacePage() {
       await axios.post(
         "/api/current_workspace",
         { workspaceId },
-        { headers: { Authorization: `Bearer ${auth.token}` } }
+        { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
       const response = await axios.get("/api/current_workspace", {
-        headers: { Authorization: `Bearer ${auth.token}` },
+        headers: { Authorization: `Bearer ${auth?.token}` },
       });
       setCurrentWorkspace(response.data.currentWorkspace);
     } catch (error) {
