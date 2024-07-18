@@ -63,7 +63,7 @@ export default function Inventory() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            "http://localhost:2000/api/current_workspace",
+            "http://localhost:2000/workspace/current_workspace",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -73,7 +73,7 @@ export default function Inventory() {
           setWorkspaceId(response.data.currentWorkspace?.id || null);
         } catch (error) {
           console.error("Error fetching current workspace", error);
-          navigate("/");
+          navigate("/workspace");
         }
       }
     };
@@ -143,16 +143,18 @@ export default function Inventory() {
         );
         toast.success("Material updated successfully");
       } else {
-        response = await fetch("/api/add_product", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newMaterial),
-        });
+        response = await axios.post(
+          "http://localhost:2000/workspace/add_inventory",
+          newMaterial,
+          {
+            headers: {
+              Authorization: `Bearer ${auth?.token}`,
+            },
+          }
+        );
 
-        if (response.ok) {
-          const result = await response.json();
+        if (response.status === 200) {
+          const result = await response.data;
           setTempMaterials((prev) => [...prev, newMaterial]);
           toast.success("Material added successfully");
         } else {

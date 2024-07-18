@@ -43,6 +43,7 @@ export default async function getInventory() {
             location: any;
             workspaceId: any;
           }) => {
+            console.log(currentWorkspace.id);
             inventoryList.push({
               itemID: value.itemID || "No ID",
               itemName: value.itemName || "No name",

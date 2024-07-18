@@ -19,7 +19,7 @@ interface MyProviderProps {
 }
 
 // Create the provider component
-export const MyProvider: React.FC<MyProviderProps> = ({ children }) => {
+export const WorkspaceProvider: React.FC<MyProviderProps> = ({ children }) => {
   const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
     null
   );
