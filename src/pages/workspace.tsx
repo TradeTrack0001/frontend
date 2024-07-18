@@ -28,23 +28,58 @@ export default function Workspace() {
     }, []);
 
     const handleCreateWorkspace = async (e: React.FormEvent) => {
-        //create a new workspace and become the admin of that workspace
+        e.preventDefault();
+        try {
+            const response = await axios.post("/api/workspaces", { name: newWorkspaceName, adminUserId: 1 }); // Replace 1 with the actual admin user ID
+            setWorkspaces([...workspaces, response.data]);
+            setNewWorkspaceName("");
+        } catch (error) {
+            console.error("Error creating workspace:", error);
+        }
     };
 
     const handleWorkspaceClick = (workspace: Workspace) => {
-       //display the information about this workspace
+        setSelectedWorkspace(workspace);
     };
 
     const handleWorkspaceNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        //change the name of your workspace
+        if (selectedWorkspace) {
+            const updatedWorkspace = { ...selectedWorkspace, name: e.target.value };
+            setSelectedWorkspace(updatedWorkspace);
+            try {
+                await axios.put(`/api/workspaces/${selectedWorkspace.id}`, { name: e.target.value });
+                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
+            } catch (error) {
+                console.error("Error updating workspace name:", error);
+            }
+        }
     };
 
     const handleInviteUser = async () => {
-        //click this button to invite another user to your workspace
+        if (selectedWorkspace && newUserName) {
+            try {
+                await axios.post(`/api/workspaces/${selectedWorkspace.id}/invite`, { userName: newUserName });
+                const updatedWorkspace = { ...selectedWorkspace, users: [...selectedWorkspace.users, newUserName] };
+                setSelectedWorkspace(updatedWorkspace);
+                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
+                setNewUserName("");
+            } catch (error) {
+                console.error("Error inviting user:", error);
+            }
+        }
     };
 
-    const handleRemoveUser = async () => {
-        //remove the user from this workspace
+    const handleRemoveUser = async (userName: string) => {
+        if (selectedWorkspace) {
+            try {
+                await axios.post(`/api/workspaces/${selectedWorkspace.id}/remove`, { userName });
+                const updatedWorkspace = { ...selectedWorkspace, users: selectedWorkspace.users.filter(user => user !== userName) };
+                setSelectedWorkspace(updatedWorkspace);
+                setWorkspaces(workspaces.map(ws => ws.id === selectedWorkspace.id ? updatedWorkspace : ws));
+            } catch (error) {
+                console.error("Error removing user:", error);
+            }
+        }
     };
 
     return (
@@ -90,7 +125,10 @@ export default function Workspace() {
                             <h3 className="text-lg font-semibold mb-2">Users</h3>
                             <ul className="list-disc list-inside mb-4">
                                 {selectedWorkspace.users.map((user, index) => (
-                                    <li key={index}>{user}</li>
+                                    <li key={index}>
+                                        {user} 
+                                        <button onClick={() => handleRemoveUser(user)} className="text-red-500 ml-2">Remove</button>
+                                    </li>
                                 ))}
                             </ul>
                             <label className="block mb-2">
@@ -103,7 +141,6 @@ export default function Workspace() {
                                 />
                             </label>
                             <button onClick={handleInviteUser} className="bg-blue-500 text-white px-4 py-2 rounded">Invite</button>
-                            <button onClick={handleRemoveUser} className="bg-red-500 text-white px-4 py-2 rounded ml-2">Remove</button>
                         </div>
                     )}
                 </div>
