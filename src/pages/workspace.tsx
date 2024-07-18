@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import Sidebar from "../components/sidebar";
 import axios from "axios";
-import { AuthContext } from "../hooks/AuthContext";
+import { AuthContext, useAuth } from "../hooks/AuthContext";
 
 type Workspace = {
   id: number;
@@ -10,19 +10,23 @@ type Workspace = {
 };
 
 export default function WorkspacePage() {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useAuth();
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
-  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null);
+  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(
+    null
+  );
   const [newUserName, setNewUserName] = useState("");
-  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(null);
+  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
+    null
+  );
 
   useEffect(() => {
     // Fetch workspaces from the backend
     const fetchWorkspaces = async () => {
       try {
         const response = await axios.get("/api/get_workspaces", {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${auth?.token}` },
         });
         setWorkspaces(response.data.workspaces);
       } catch (error) {
@@ -31,15 +35,15 @@ export default function WorkspacePage() {
     };
 
     fetchWorkspaces();
-  }, [auth.token]);
+  }, [auth?.token]);
 
   const handleCreateWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await axios.post(
         "/api/create_workspace",
-        { name: newWorkspaceName, adminId: auth.user.id },
-        { headers: { Authorization: `Bearer ${auth.token}` } }
+        { name: newWorkspaceName, adminId: auth?.user?.id },
+        { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
       setWorkspaces([...workspaces, response.data.workspace]);
       setNewWorkspaceName("");
@@ -87,51 +91,66 @@ export default function WorkspacePage() {
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 p-5">
-        <div className="flex flex-col items-center justify-center flex-1 bg-gray-200 p-5 rounded">
-          <h1 className="text-4xl font-bold mb-4">Workspaces</h1>
+        <div className="flex flex-col items-center justify-center flex-1 p-5 bg-gray-200 rounded">
+          <h1 className="mb-4 text-4xl font-bold">Workspaces</h1>
           <form onSubmit={handleCreateWorkspace} className="mb-6">
-            <h2 className="text-2xl font-semibold mb-2">Create New Workspace</h2>
+            <h2 className="mb-2 text-2xl font-semibold">
+              Create New Workspace
+            </h2>
             <label className="block mb-2">
               Name:
               <input
                 type="text"
                 value={newWorkspaceName}
                 onChange={(e) => setNewWorkspaceName(e.target.value)}
-                className="border rounded p-2 ml-2"
+                className="p-2 ml-2 border rounded"
               />
             </label>
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button
+              type="submit"
+              className="px-4 py-2 text-white bg-blue-500 rounded"
+            >
               Create
             </button>
           </form>
-          <h2 className="text-2xl font-semibold mb-2">My Workspaces</h2>
+          <h2 className="mb-2 text-2xl font-semibold">My Workspaces</h2>
           <ul className="list-disc list-inside">
             {workspaces.map((workspace) => (
-              <li key={workspace.id} className="cursor-pointer" onClick={() => handleWorkspaceClick(workspace)}>
+              <li
+                key={workspace.id}
+                className="cursor-pointer"
+                onClick={() => handleWorkspaceClick(workspace)}
+              >
                 {workspace.name}
-                <button onClick={() => handleSetCurrentWorkspace(workspace.id)} className="ml-4 bg-green-500 text-white px-2 py-1 rounded">
+                <button
+                  onClick={() => handleSetCurrentWorkspace(workspace.id)}
+                  className="px-2 py-1 ml-4 text-white bg-green-500 rounded"
+                >
                   Set as Current
                 </button>
               </li>
             ))}
           </ul>
           {selectedWorkspace && (
-            <div className="mt-6 bg-white p-4 rounded shadow-lg">
-              <h2 className="text-xl font-semibold mb-2">Workspace Settings</h2>
-              <h3 className="text-lg font-semibold mb-2">Invite User</h3>
+            <div className="p-4 mt-6 bg-white rounded shadow-lg">
+              <h2 className="mb-2 text-xl font-semibold">Workspace Settings</h2>
+              <h3 className="mb-2 text-lg font-semibold">Invite User</h3>
               <label className="block mb-2">
                 Email:
                 <input
                   type="email"
                   value={newUserName}
                   onChange={(e) => setNewUserName(e.target.value)}
-                  className="border rounded p-2 ml-2"
+                  className="p-2 ml-2 border rounded"
                 />
               </label>
-              <button onClick={handleInviteUser} className="bg-blue-500 text-white px-4 py-2 rounded">
+              <button
+                onClick={handleInviteUser}
+                className="px-4 py-2 text-white bg-blue-500 rounded"
+              >
                 Invite
               </button>
-              <h3 className="text-lg font-semibold mt-4">Users</h3>
+              <h3 className="mt-4 text-lg font-semibold">Users</h3>
               <ul className="list-disc list-inside">
                 {selectedWorkspace.users.map((user, index) => (
                   <li key={index}>{user}</li>
