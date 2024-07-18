@@ -29,9 +29,11 @@ export default function Inventory() {
   const auth = authContext?.auth;
   const logout = authContext?.logout;
 
+  // Assuming you have a context or state to get the current workspace ID
+  const workspaceId = authContext?.workspaceId;
+
   useEffect(() => {
     const fetchProtectedData = async () => {
-      console.log(auth);
       if (auth && auth.token) {
         try {
           const response = await axios.get(
@@ -46,7 +48,6 @@ export default function Inventory() {
         } catch (error: any) {
           console.error("Error fetching protected data", error);
           if (error.response && error.response.status === 401) {
-            // Token is invalid or expired, log the user out
             if (logout) {
               logout();
             }
@@ -82,7 +83,6 @@ export default function Inventory() {
     // Fetch data from the database
     async function fetchMaterials() {
       const data: Material[] = await getInventory();
-      console.log(data);
       setMaterials(data);
     }
     fetchMaterials();
@@ -101,7 +101,6 @@ export default function Inventory() {
             : value,
       };
 
-      // Automatically set status based on quantity
       if (name === "itemQuantity") {
         updatedMaterial.itemStatus = parseInt(value, 10) > 0;
       }
@@ -115,8 +114,6 @@ export default function Inventory() {
     try {
       let response;
       if (isEditMode) {
-        // Update existing item
-        console.log("Updating item:", newMaterial);
         await updateInventory([newMaterial]);
         setMaterials((prev) =>
           prev.map((material) =>
@@ -125,7 +122,6 @@ export default function Inventory() {
         );
         toast.success("Material updated successfully");
       } else {
-        // Add new item
         response = await fetch("/api/add_product", {
           method: "POST",
           headers: {
@@ -136,7 +132,6 @@ export default function Inventory() {
 
         if (response.ok) {
           const result = await response.json();
-          console.log("Product added:", result);
           setTempMaterials((prev) => [...prev, newMaterial]);
           toast.success("Material added successfully");
         } else {
@@ -147,7 +142,6 @@ export default function Inventory() {
       console.error("Error adding/updating product:", error);
     }
 
-    // Reset form and state
     setNewMaterial({
       itemID: 0,
       itemName: "",
@@ -176,6 +170,15 @@ export default function Inventory() {
     setTempMaterials([]);
     setIsFormVisible(false); // Hide form after adding materials
   };
+
+  if (!workspaceId) {
+    return (
+      <div>
+        <Sidebar />
+        <div>Workspace not found, create or join a workspace to get started</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">
