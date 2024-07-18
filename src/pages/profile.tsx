@@ -4,7 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useProfile } from "../hooks/proflie";
 import { useAuth } from "../hooks/AuthContext";
-
+import { updateProfile } from "../hooks/updateProfile";
 type Employee = {
   id: string;
   name: string;
@@ -63,7 +63,7 @@ export default function Profile() {
       }
     }
 
-    // Fetch employees list from the database
+
     async function fetchEmployees() {
       try {
         // const response = await axios.get("/api/employees"); // Adjust the API endpoint as needed
@@ -77,7 +77,7 @@ export default function Profile() {
         const updateEmployee = (data: any) => {
           setEmployee({
             id: data.id,
-            name: "",
+            name: data.name&&"",
             email: data.email,
             password: data.password,
             isAdmin: data.role === "ADMIN",
@@ -116,7 +116,10 @@ export default function Profile() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put("/api/employee", employee); // Adjust the API endpoint as needed
+      // await axios.put("/api/employee", employee); // Adjust the API endpoint as needed
+      // toast("Profile updated successfully");
+
+      await updateProfile( auth?.token,employee );
       toast("Profile updated successfully");
     } catch (error) {
       console.error("Error updating profile:", error);
