@@ -1,9 +1,13 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Define the shape of the context state
+type Workspace = {
+  id: number;
+  name: string;
+};
 interface ContextState {
-  currentWorkspace: string;
-  setCurrentWorkspace: (value: string) => void;
+  currentWorkspace: Workspace | null;
+  setCurrentWorkspace: (value: Workspace) => void;
 }
 
 // Create the context with a default value
@@ -16,7 +20,9 @@ interface MyProviderProps {
 
 // Create the provider component
 export const MyProvider: React.FC<MyProviderProps> = ({ children }) => {
-  const [currentWorkspace, setCurrentWorkspace] = useState<string>("");
+  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
+    null
+  );
 
   return (
     <Workspace.Provider value={{ currentWorkspace, setCurrentWorkspace }}>

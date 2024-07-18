@@ -17,7 +17,7 @@ export default async function getInventory() {
     checkOutDate: any;
     location: any;
   }[] = [];
-  const url = `${baseUrl}/api/get_products`;
+  const url = `${baseUrl}/workspace/workspaces/${currentWorkspace.id}/inventory`;
 
   try {
     const res = await axios.get(url);
@@ -26,7 +26,7 @@ export default async function getInventory() {
       const data = res.data;
       console.log("This is the data: ", data);
 
-      if (data && data.inventory) {
+      if (data && data.inventory && currentWorkspace) {
         data.inventory.forEach(
           (value: {
             itemID: any;
