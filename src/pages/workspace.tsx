@@ -41,7 +41,7 @@ export default function WorkspacePage() {
     try {
       const response = await axios.post(
         "/workspace/create_workspace",
-        { name: newWorkspaceName, adminId: auth?.user.id },
+        { name: newWorkspaceName },
         { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
       setWorkspaces([...workspaces, response.data.workspace]);
