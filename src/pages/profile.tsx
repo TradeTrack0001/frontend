@@ -43,11 +43,26 @@ export default function Profile() {
     // Fetch employee information from the database
     async function fetchEmployee() {
       try {
-        const response = await axios.get("/api/employee"); // Adjust the API endpoint as needed
-        setEmployee({
-          ...response.data,
-          isAdmin: true, // Set to true for development
-        });
+        // const response = await axios.get("/api/employee"); // Adjust the API endpoint as needed
+        // setEmployee({
+        //   ...response.data,
+        //   isAdmin: true, // Set to true for development
+        // });
+
+        await fetchProfile();
+        console.log("message", message);
+
+        const updateEmployee = (data: any) => {
+          setEmployee({
+            id: data.id,
+            name: data.name&&"",
+            email: data.email,
+            password: data.password,
+            isAdmin: data.role === "ADMIN",
+            companyEmail: data.companyEmail,
+          });
+        };
+        updateEmployee(message);
       } catch (error) {
         console.error("Error fetching employee data:", error);
       }
@@ -71,21 +86,7 @@ export default function Profile() {
         // if(localStorage.getItem("auth")){
 
         // }
-        await fetchProfile();
-        console.log("message", message);
-
-        const updateEmployee = (data: any) => {
-          setEmployee({
-            id: data.id,
-            name: data.name&&"",
-            email: data.email,
-            password: data.password,
-            isAdmin: data.role === "ADMIN",
-            companyEmail: data.companyEmail,
-          });
-        };
-        updateEmployee(message);
-
+        console.log("what do you want to do here?");
         // setEmployees(response);
       } catch (error) {
         console.error("Error fetching employees list:", error);
