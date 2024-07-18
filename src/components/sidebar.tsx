@@ -7,7 +7,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-
   const handleNavigation = (path: string) => {
     setIsSidebarOpen(false); // Close sidebar on navigation
     console.log(path);
@@ -38,8 +37,7 @@ export default function Sidebar() {
       </div>
 
       {/* Sidebar for all screens */}
-
-      <div className={`fixed top-0 left-0 bottom-0 bg-blue-700 text-white p-5 min-h-screen w-64 transition-transform transform md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} z-30`}>
+      <div className={`fixed top-0 left-0 bottom-0 bg-blue-700 text-white p-5 min-h-screen w-64 transition-transform transform md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} z-30 overflow-y-auto`}>
         <div className="flex flex-col h-full">
           <div>
             <img src="src/assets/TradeTrackLogo.png" alt="Company Logo" className="w-32 h-32 mx-auto" />
