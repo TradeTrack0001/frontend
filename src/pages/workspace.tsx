@@ -24,7 +24,7 @@ export default function WorkspacePage() {
     // Fetch workspaces from the backend
     const fetchWorkspaces = async () => {
       try {
-        const response = await axios.get("/api/get_workspaces", {
+        const response = await axios.get("/workspace/get_workspaces", {
           headers: { Authorization: `Bearer ${auth?.token}` },
         });
         setWorkspaces(response.data.workspaces);
@@ -40,7 +40,7 @@ export default function WorkspacePage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "/api/create_workspace",
+        "/workspace/create_workspace",
         { name: newWorkspaceName, adminId: auth?.user.id },
         { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
@@ -59,7 +59,7 @@ export default function WorkspacePage() {
     if (selectedWorkspace) {
       try {
         await axios.post(
-          "/api/invite",
+          "/workspace/invite",
           { email: newUserName, workspaceId: selectedWorkspace.id },
           { headers: { Authorization: `Bearer ${auth?.token}` } }
         );
@@ -73,11 +73,11 @@ export default function WorkspacePage() {
   const handleSetCurrentWorkspace = async (workspaceId: number) => {
     try {
       await axios.post(
-        "/api/current_workspace",
+        "/workspace/current_workspace",
         { workspaceId },
         { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
-      const response = await axios.get("/api/current_workspace", {
+      const response = await axios.get("/workspace/current_workspace", {
         headers: { Authorization: `Bearer ${auth?.token}` },
       });
       setCurrentWorkspace(response.data.currentWorkspace);
