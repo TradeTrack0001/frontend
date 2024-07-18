@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
 import axios from "axios";
 import { useAuth } from "../hooks/AuthContext";
+import { useWorkspace } from "../hooks/workspace";
 
 type Workspace = {
   id: number;
@@ -17,9 +18,7 @@ export default function WorkspacePage() {
     null
   );
   const [newUserName, setNewUserName] = useState("");
-  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
-    null
-  );
+  const { currentWorkspace, setCurrentWorkspace } = useWorkspace();
 
   useEffect(() => {
     // Fetch workspaces from the backend
