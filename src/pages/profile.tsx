@@ -21,12 +21,14 @@ type OrderEmail = {
 
 export default function Profile() {
   const { fetchProfile } = useProfile();
+  const {message} = useProfile();
   const [employee, setEmployee] = useState<Employee>({
     id: "",
     name: "",
     email: "",
     password: "",
-    isAdmin: true, // Set to true for development
+    isAdmin: true,
+    companyEmail: "", // Set to true for development
   });
 
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -70,6 +72,20 @@ export default function Profile() {
 
         // }
         await fetchProfile();
+        console.log("message", message);
+
+        const updateEmployee = (data: any) => {
+          setEmployee({
+            id: data.id,
+            name: "",
+            email: data.email,
+            password: data.password,
+            isAdmin: data.role === "ADMIN",
+            companyEmail: data.companyEmail,
+          });
+        };
+        updateEmployee(message);
+
         // setEmployees(response);
       } catch (error) {
         console.error("Error fetching employees list:", error);

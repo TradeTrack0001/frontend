@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import axios from "axios";
-import { AuthContext, AuthContextType, useAuth } from "./AuthContext";
+import {  useAuth } from "./AuthContext";
 
 interface ProfileContextType {
   message: string;
@@ -21,10 +21,11 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
 
   const fetchProfile = async () => {
     console.log("auth", auth);
+    console.log("is this working");
 
     if (auth && auth.token) {
       try {
-        console.log("fetching profile100");
+
         const response = await axios.get(
           "http://localhost:2000/profile/get_user",
           {
@@ -56,5 +57,6 @@ export const useProfile = (): ProfileContextType => {
   if (context === undefined) {
     throw new Error("useProfile must be used within a ProfileProvider");
   }
+  console.log(context);
   return context;
 };
