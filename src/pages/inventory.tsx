@@ -20,6 +20,7 @@ type Material = {
   checkInDate: string;
   checkOutDate: string;
   location: string;
+  workspaceId: number;
 };
 
 export default function Inventory() {
@@ -93,6 +94,7 @@ export default function Inventory() {
     checkInDate: "",
     checkOutDate: "N/A",
     location: "",
+    workspaceId: workspaceId?.valueOf() || 0,
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false); // To track if we're editing an item
@@ -172,6 +174,7 @@ export default function Inventory() {
       checkInDate: "",
       checkOutDate: "N/A",
       location: "",
+      workspaceId: workspaceId?.valueOf() || 0,
     });
     setIsFormVisible(false);
     setIsEditMode(false);
@@ -194,7 +197,9 @@ export default function Inventory() {
     return (
       <div>
         <Sidebar />
-        <div>Workspace not found, create or join a workspace to get started</div>
+        <div>
+          Workspace not found, create or join a workspace to get started
+        </div>
       </div>
     );
   }
@@ -430,16 +435,16 @@ export default function Inventory() {
                     <th className="px-4 py-2 border border-black">Quantity</th>
                     <th className="px-4 py-2 border border-black">Status</th>
                     <th className="px-4 py-2 border border-black">Size</th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
                       Type
                     </th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
                       Check In Date
                     </th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
                       Check Out Date
                     </th>
-                    <th className="px-4 py-2 border border-black hidden md:table-cell">
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
                       Location
                     </th>
                     <th className="px-4 py-2 border border-black">Actions</th>
@@ -448,13 +453,13 @@ export default function Inventory() {
                 <tbody>
                   {materials.map((material, index) => (
                     <tr key={index}>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.itemID}
                       </td>
                       <td className="px-4 py-2 border border-black">
                         {material.itemName}
                       </td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.itemDescription}
                       </td>
                       <td className="px-4 py-2 border border-black">
@@ -466,16 +471,16 @@ export default function Inventory() {
                       <td className="px-4 py-2 border border-black">
                         {material.itemSize}
                       </td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.type}
                       </td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.checkInDate}
                       </td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.checkOutDate}
                       </td>
-                      <td className="px-4 py-2 border border-black hidden md:table-cell">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.location}
                       </td>
                       <td className="px-4 py-2 border border-black">

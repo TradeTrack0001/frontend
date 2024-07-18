@@ -16,8 +16,9 @@ export default async function getInventory() {
     checkInDate: any;
     checkOutDate: any;
     location: any;
+    workspaceId: any;
   }[] = [];
-  if (!currentWorkspace) return;
+  if (!currentWorkspace) return [];
   const url = `${baseUrl}/workspace/workspaces/${currentWorkspace?.id}/inventory`;
 
   try {
@@ -40,6 +41,7 @@ export default async function getInventory() {
             checkInDate: any;
             checkOutDate: any;
             location: any;
+            workspaceId: any;
           }) => {
             inventoryList.push({
               itemID: value.itemID || "No ID",
@@ -52,6 +54,7 @@ export default async function getInventory() {
               checkInDate: value.checkInDate || "No date",
               checkOutDate: value.checkOutDate || "No date",
               location: value.location || "No location",
+              workspaceId: currentWorkspace.id || "No workspace ID",
             });
           }
         );
