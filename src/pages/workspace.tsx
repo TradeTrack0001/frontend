@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
 import axios from "axios";
-import { AuthContext, useAuth } from "../hooks/AuthContext";
+import { useAuth } from "../hooks/AuthContext";
 
 type Workspace = {
   id: number;
