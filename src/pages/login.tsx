@@ -44,7 +44,7 @@ const Login: React.FC = () => {
       try {
         if (isLoginForm) {
           await authContext.login(email, password);
-          navigate("/inventory");
+          navigate("/workspace");
           toast.success("Login successful");
         } else {
           // Add your registration logic here
