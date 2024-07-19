@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
-import axios from "../utils/axiosInstance" // Use the configured axios instance
+import axios from "../utils/axiosInstance"; // Use the configured axios instance
 import { useAuth } from "../hooks/AuthContext";
 import { useWorkspace } from "../hooks/workspace";
 import { useNavigate } from "react-router-dom";
@@ -83,7 +83,6 @@ export default function WorkspacePage() {
         headers: { Authorization: `Bearer ${auth?.token}` },
       });
       setCurrentWorkspace(response.data.currentWorkspace);
-      navigate("/inventory");
     } catch (error) {
       console.error("Error setting current workspace:", error);
     }
@@ -94,10 +93,10 @@ export default function WorkspacePage() {
       <Sidebar />
       <div className="flex-1 p-5">
         <div className="flex flex-col items-center justify-center flex-1 p-5">
-          <div className="bg-gray-300 p-6 rounded mb-4 w-full max-w-md mt-8 md:mt-0">
+          <div className="bg-gray-100 p-6 rounded mb-4 w-full max-w-md mt-8 md:mt-0 shadow">
             <h1 className="text-4xl font-bold text-center">Workspaces</h1>
           </div>
-          <div className="bg-gray-300 p-6 rounded mb-4 w-full max-w-md">
+          <div className="bg-gray-100 p-6 rounded mb-4 w-full max-w-md shadow">
             <form onSubmit={handleCreateWorkspace}>
               <h2 className="text-2xl font-semibold text-center mb-4">
                 Create New Workspace
@@ -115,7 +114,7 @@ export default function WorkspacePage() {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white bg-blue-500 rounded"
+                  className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
                   style={{ width: "auto" }}
                 >
                   Create
@@ -123,11 +122,12 @@ export default function WorkspacePage() {
               </div>
             </form>
           </div>
-          <div className="bg-gray-300 p-6 rounded w-full max-w-md">
+          <div className="bg-gray-100 p-6 rounded w-full max-w-md shadow">
             <h2 className="text-2xl font-semibold text-center mb-4">
               My Workspaces
             </h2>
-            <ul className="list-disc list-inside">
+            <h3 className="text-lg font-semibold mb-2">Name:</h3>
+            <ul className="list-none list-inside">
               {workspaces &&
                 workspaces.map((workspace) => (
                   <li
@@ -139,7 +139,7 @@ export default function WorkspacePage() {
                       {workspace.name}
                       <button
                         onClick={() => handleSetCurrentWorkspace(workspace.id)}
-                        className="px-2 py-1 ml-4 text-white bg-green-500 rounded"
+                        className="px-2 py-1 ml-4 text-white bg-blue-500 rounded hover:bg-blue-800"
                       >
                         Set as Current
                       </button>
@@ -166,7 +166,7 @@ export default function WorkspacePage() {
                 <div className="text-center">
                   <button
                     onClick={handleInviteUser}
-                    className="px-4 py-2 text-white bg-blue-500 rounded"
+                    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
                     style={{ width: "auto" }}
                   >
                     Invite
