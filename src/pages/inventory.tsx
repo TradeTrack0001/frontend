@@ -33,31 +33,31 @@ export default function Inventory() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
 
   useEffect(() => {
-    // const fetchProtectedData = async () => {
-    //   if (auth && auth.token) {
-    //     try {
-    //       const response = await axios.get(
-    //         "http://localhost:2000/auth/protected",
-    //         {
-    //           headers: {
-    //             Authorization: `Bearer ${auth.token}`,
-    //           },
-    //         }
-    //       );
-    //       setMessage(response.data);
-    //     } catch (error: any) {
-    //       console.error("Error fetching protected data", error);
-    //       if (error.response && error.response.status === 401) {
-    //         if (logout) {
-    //           logout();
-    //         }
-    //         navigate("/");
-    //       }
-    //     }
-    //   } else {
-    //     navigate("/");
-    //   }
-    // };
+    const fetchProtectedData = async () => {
+      if (auth && auth.token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:2000/auth/protected",
+            {
+              headers: {
+                Authorization: `Bearer ${auth.token}`,
+              },
+            }
+          );
+          setMessage(response.data);
+        } catch (error: any) {
+          console.error("Error fetching protected data", error);
+          if (error.response && error.response.status === 401) {
+            if (logout) {
+              logout();
+            }
+            navigate("/");
+          }
+        }
+      } else {
+        navigate("/");
+      }
+    };
 
     const fetchCurrentWorkspace = async () => {
       if (auth && auth.token) {
@@ -71,6 +71,11 @@ export default function Inventory() {
             }
           );
           setWorkspaceId(response.data.currentWorkspace?.id || null);
+          setNewMaterial((prev) => ({
+            ...prev,
+            workspaceId: response.data.currentWorkspace?.id || 0,
+          }))
+          console.log("Current workspace ID:", response.data.currentWorkspace?.id);
         } catch (error) {
           console.error("Error fetching current workspace", error);
           navigate("/workspace");
@@ -78,7 +83,7 @@ export default function Inventory() {
       }
     };
 
-    // fetchProtectedData();
+    fetchProtectedData();
     fetchCurrentWorkspace();
   }, [auth, logout, navigate]);
 
@@ -103,7 +108,8 @@ export default function Inventory() {
   useEffect(() => {
     // Fetch data from the database
     async function fetchMaterials() {
-      const data: Material[] = await getInventory();
+      const data: any = await getInventory();
+
       setMaterials(data.inventoryItems);
     }
     fetchMaterials();
@@ -195,7 +201,7 @@ export default function Inventory() {
     setIsFormVisible(false); // Hide form after adding materials
   };
   useEffect(() => {
-    console.log("mats:", materials.inventoryItems);
+    // console.log("mats:", materials.inventoryItems);
   }, [materials]);
   if (!workspaceId) {
     return (
@@ -235,7 +241,7 @@ export default function Inventory() {
                 onSubmit={addOrUpdateMaterial}
                 className="grid grid-cols-2 gap-4"
               >
-                <div>
+                {/* <div>
                   <label className="block text-gray-700">ID</label>
                   <input
                     type="number"
@@ -246,7 +252,7 @@ export default function Inventory() {
                     className="w-full p-2 border rounded"
                     disabled={isEditMode} // Disable ID field when editing
                   />
-                </div>
+                </div> */}
                 <div>
                   <label className="block text-gray-700">Name</label>
                   <input
