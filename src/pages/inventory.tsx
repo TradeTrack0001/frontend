@@ -231,7 +231,7 @@ export default function Inventory() {
             {isFormVisible ? "-" : "+"}
           </button>
         </div>
-        <div className="p-3 mt-16 bg-white rounded shadow">
+        <div className="p-3 mt-16 bg-white rounded shadow overflow-x-auto">
           {isFormVisible && (
             <div className="mt-4 mb-4">
               <h3 className="mb-2 text-xl text-gray-800 border">
@@ -239,20 +239,8 @@ export default function Inventory() {
               </h3>
               <form
                 onSubmit={addOrUpdateMaterial}
-                className="grid grid-cols-2 gap-4"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
               >
-                {/* <div>
-                  <label className="block text-gray-700">ID</label>
-                  <input
-                    type="number"
-                    name="itemID"
-                    placeholder="ID"
-                    value={newMaterial.itemID}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    disabled={isEditMode} // Disable ID field when editing
-                  />
-                </div> */}
                 <div>
                   <label className="block text-gray-700">Name</label>
                   <input
@@ -443,7 +431,9 @@ export default function Inventory() {
                       Description
                     </th>
                     <th className="px-4 py-2 border border-black">Quantity</th>
-                    <th className="px-4 py-2 border border-black">Status</th>
+                    <th className="hidden px-4 py-2 border border-black md:table-cell">
+                      Status
+                    </th>
                     <th className="px-4 py-2 border border-black">Size</th>
                     <th className="hidden px-4 py-2 border border-black md:table-cell">
                       Type
@@ -475,7 +465,7 @@ export default function Inventory() {
                       <td className="px-4 py-2 border border-black">
                         {material.itemQuantity}
                       </td>
-                      <td className="px-4 py-2 border border-black">
+                      <td className="hidden px-4 py-2 border border-black md:table-cell">
                         {material.itemStatus ? "Available" : "Checked Out"}
                       </td>
                       <td className="px-4 py-2 border border-black">

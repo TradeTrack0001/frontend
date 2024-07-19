@@ -216,10 +216,10 @@ export default function Checkin() {
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 p-5 pt-16 md:ml-64">
-        <div className="p-3 bg-white rounded shadow">
+        <div className="p-3 bg-white rounded shadow overflow-x-auto">
           <h2 className="mb-4 text-2xl text-gray-800">Check In Details</h2>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Material Details */}
             <div>
               <h3 className="mb-2 text-xl text-gray-800">Material Details</h3>
@@ -375,16 +375,16 @@ export default function Checkin() {
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="px-4 py-2 border-b">ID</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">ID</th>
                 <th className="px-4 py-2 border-b">Name</th>
-                <th className="px-4 py-2 border-b">Description</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">Description</th>
                 <th className="px-4 py-2 border-b">Quantity</th>
-                <th className="px-4 py-2 border-b">Status</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">Status</th>
                 <th className="px-4 py-2 border-b">Size</th>
-                <th className="px-4 py-2 border-b">Type</th>
-                <th className="px-4 py-2 border-b">Check In Date</th>
-                <th className="px-4 py-2 border-b">Check Out Date</th>
-                <th className="px-4 py-2 border-b">Location</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">Type</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">Check In Date</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">Check Out Date</th>
+                <th className="hidden px-4 py-2 border-b md:table-cell">Location</th>
               </tr>
             </thead>
             <tbody>
@@ -394,24 +394,16 @@ export default function Checkin() {
                   className="cursor-pointer"
                   onClick={() => handleInventoryItemClick(material)}
                 >
-                  <td className="px-4 py-2 border-b">{material.itemID}</td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.itemID}</td>
                   <td className="px-4 py-2 border-b">{material.itemName}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemDescription}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemQuantity}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {material.itemStatus ? "Available" : "Checked Out"}
-                  </td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.itemDescription}</td>
+                  <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.itemStatus ? "Available" : "Checked Out"}</td>
                   <td className="px-4 py-2 border-b">{material.itemSize}</td>
-                  <td className="px-4 py-2 border-b">{material.type}</td>
-                  <td className="px-4 py-2 border-b">{material.checkInDate}</td>
-                  <td className="px-4 py-2 border-b">
-                    {material.checkOutDate}
-                  </td>
-                  <td className="px-4 py-2 border-b">{material.location}</td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.type}</td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.checkInDate}</td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.checkOutDate}</td>
+                  <td className="hidden px-4 py-2 border-b md:table-cell">{material.location}</td>
                 </tr>
               ))}
             </tbody>
