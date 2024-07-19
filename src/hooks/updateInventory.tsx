@@ -20,7 +20,6 @@ export const updateInventory = async (data: any[]) => {
     console.log("This is the data in api call: ", id, name, location, employeeId, employeeName, checkOutDate, duration, dueOn, "fucking quantity", itemQuantity);
     
     const response = await axios.put(`${baseUrl}update_product/${id}`, {
-        id,
         description,
         name,
         itemQuantity,
