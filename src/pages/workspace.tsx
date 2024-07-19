@@ -21,6 +21,9 @@ export default function WorkspacePage() {
   );
   const [newUserName, setNewUserName] = useState("");
   const { currentWorkspace, setCurrentWorkspace } = useWorkspace();
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     // Fetch workspaces from the backend
@@ -83,6 +86,7 @@ export default function WorkspacePage() {
         headers: { Authorization: `Bearer ${auth?.token}` },
       });
       setCurrentWorkspace(response.data.currentWorkspace);
+      setActiveWorkspaceId(workspaceId); // Update the active workspace ID
     } catch (error) {
       console.error("Error setting current workspace:", error);
     }
@@ -114,7 +118,7 @@ export default function WorkspacePage() {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
+                  className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800 active:bg-blue-700"
                   style={{ width: "auto" }}
                 >
                   Create
@@ -139,7 +143,11 @@ export default function WorkspacePage() {
                       {workspace.name}
                       <button
                         onClick={() => handleSetCurrentWorkspace(workspace.id)}
-                        className="px-2 py-1 ml-4 text-white bg-blue-500 rounded hover:bg-blue-800"
+                        className={`px-2 py-1 ml-4 text-white rounded hover:bg-blue-800 ${
+                          activeWorkspaceId === workspace.id
+                            ? "bg-blue-800"
+                            : "bg-blue-500"
+                        }`}
                       >
                         Set as Current
                       </button>
@@ -166,7 +174,7 @@ export default function WorkspacePage() {
                 <div className="text-center">
                   <button
                     onClick={handleInviteUser}
-                    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
+                    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800 active:bg-blue-700"
                     style={{ width: "auto" }}
                   >
                     Invite
