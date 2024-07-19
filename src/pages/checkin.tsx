@@ -120,20 +120,25 @@ export default function Checkin() {
   const fetchMaterials = async (workspaceId: string) => {
     const data = await getInventory(); // Adjust your hook to accept workspaceId
     console.log("This is the data: ", data);
-    const formattedData = data.inventoryItems.map((item: any) => ({
-      itemID: item.itemID,
-      itemName: item.itemName,
-      itemDescription: item.itemDescription,
-      itemQuantity: item.itemQuantity,
-      itemStatus: item.itemStatus,
-      itemSize: item.itemSize,
-      type: item.type,
-      checkInDate: item.checkInDate,
-      checkOutDate: item.checkOutDate,
-      location: item.location,
-    }));
-    setMaterials(formattedData);
-    console.log("This is the materials: ", materials);
+    
+    if (data && data.inventoryItems) {
+      const formattedData = data.inventoryItems.map((item: any) => ({
+        itemID: item.itemID,
+        itemName: item.itemName,
+        itemDescription: item.itemDescription,
+        itemQuantity: item.itemQuantity,
+        itemStatus: item.itemStatus,
+        itemSize: item.itemSize,
+        type: item.type,
+        checkInDate: item.checkInDate,
+        checkOutDate: item.checkOutDate,
+        location: item.location,
+      }));
+      setMaterials(formattedData);
+      console.log("This is the materials: ", formattedData);
+    } else {
+      console.error("Data format is incorrect: ", data);
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,7 +1,10 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent, useContext } from "react";
 import Sidebar from "../components/sidebar";
 import useCheckOut from "../hooks/check-out";
 import { useWorkspace } from "../hooks/workspace";
+import { AuthContext } from "../hooks/AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Define the material type
 type Material = {
@@ -33,7 +36,11 @@ type CheckOutItem = {
 
 export default function Checkout() {
   const { getInventory } = useWorkspace();
-
+  const [message, setMessage] = useState<string>("");
+  const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
+  const auth = authContext?.auth;
+  const logout = authContext?.logout;
   const [materials, setMaterials] = useState<Material[]>([]);
   const [checkedOutItems, setCheckedOutItems] = useState<CheckOutItem[]>([]);
   const [newCheckOut, setNewCheckOut] = useState<CheckOutItem>({
@@ -50,20 +57,92 @@ export default function Checkout() {
   });
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
 
+
   useEffect(() => {
     // Fetch workspaceId from local storage
-    const storedWorkspaceId = localStorage.getItem("workspaceId");
-    if (storedWorkspaceId) {
-      setWorkspaceId(storedWorkspaceId);
-      fetchMaterials(storedWorkspaceId); // Fetch data based on workspaceId
+    if (workspaceId) {
+      fetchMaterials(workspaceId); // Fetch data based on workspaceId
     } else {
       setWorkspaceId(null);
     }
-  }, []);
+  }, [workspaceId]);
+
+  useEffect(() => {
+    const fetchProtectedData = async () => {
+      if (auth && auth.token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:2000/auth/protected",
+            {
+              headers: {
+                Authorization: `Bearer ${auth.token}`,
+              },
+            }
+          );
+          setMessage(response.data);
+        } catch (error: any) {
+          console.error("Error fetching protected data", error);
+          if (error.response && error.response.status === 401) {
+            if (logout) {
+              logout();
+            }
+            navigate("/");
+          }
+        }
+      } else {
+        navigate("/");
+      }
+    };
+    const fetchCurrentWorkspace = async () => {
+      if (auth && auth.token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:2000/workspace/current_workspace",
+            {
+              headers: {
+                Authorization: `Bearer ${auth.token}`,
+              },
+            }
+          );
+          setWorkspaceId(response.data.currentWorkspace?.id || null);
+          // setMaterials((prev) => ({
+          //   ...prev,
+          //   workspaceId: response.data.currentWorkspace?.id || 0,
+          // }))
+          console.log("Current workspace ID:", response.data.currentWorkspace?.id);
+        } catch (error) {
+          console.error("Error fetching current workspace", error);
+          navigate("/workspace");
+        }
+      }
+    };
+
+    fetchProtectedData();
+    fetchCurrentWorkspace();
+  }, [auth, logout, navigate]);
 
   const fetchMaterials = async (workspaceId: string) => {
     const data = await getInventory(); // Adjust your hook to accept workspaceId
-    setMaterials(data);
+    console.log("This is the data: ", data);
+    
+    if (data && data.inventoryItems) {
+      const formattedData = data.inventoryItems.map((item: any) => ({
+        itemID: item.itemID,
+        itemName: item.itemName,
+        itemDescription: item.itemDescription,
+        itemQuantity: item.itemQuantity,
+        itemStatus: item.itemStatus,
+        itemSize: item.itemSize,
+        type: item.type,
+        checkInDate: item.checkInDate,
+        checkOutDate: item.checkOutDate,
+        location: item.location,
+      }));
+      setMaterials(formattedData);
+      console.log("This is the materials: ", materials);
+    } else {
+      console.error("Data format is incorrect: ", data);
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
