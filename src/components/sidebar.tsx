@@ -75,14 +75,14 @@ export default function Sidebar() {
                   <FontAwesomeIcon icon={faSignInAlt} className="mr-3" /> Check in {/* Increased margin */}
                 </button>
               </li>
-              <li>
+              {/* <li>
                 <button
                   onClick={() => handleNavigation("/orders")}
                   className="hover:bg-blue-800 p-4 rounded w-full text-left flex items-center" // Increased padding
                 >
-                  <FontAwesomeIcon icon={faList} className="mr-3" /> Orders {/* Increased margin */}
+                  <FontAwesomeIcon icon={faList} className="mr-3" /> Orders // Increased margin
                 </button>
-              </li>
+              </li>*/}
               <li>
                 <button
                   onClick={() => handleNavigation("/workspace")}

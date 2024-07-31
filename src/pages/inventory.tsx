@@ -6,6 +6,7 @@ import { AuthContext } from "../hooks/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { updateInventory } from "../hooks/updateInventory";
+import { deleteInventory } from "../hooks/deleteInventory"; // Import the delete function
 import { useWorkspace } from "../hooks/workspace";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpandArrowsAlt, faCheckCircle, faWrench, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
@@ -236,6 +237,23 @@ export default function Inventory() {
     setIsEditMode(true);
   };
 
+  // Add the delete function
+  const handleDelete = async (itemID: number) => {
+    if (auth && auth.token) {
+      try {
+        const response = await deleteInventory(itemID);
+        if (response) {
+          setMaterials((prev) => prev.filter((material) => material.itemID !== itemID));
+          toast.success("Material deleted successfully");
+        } else {
+          console.error("Error deleting product");
+        }
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    }
+  };
+
   const confirmNewItems = async () => {
     await useAddInventory(tempMaterials);
     setMaterials((prev) => [...prev, ...tempMaterials]);
@@ -260,22 +278,23 @@ export default function Inventory() {
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 p-5 pt-24 md:ml-64"> {/* Increased top padding */}
-        <div className="absolute top-5 right-5 z-10">
+        <div className="absolute top-5 right-5 ">
           <button
             onClick={() => {
               setIsFormVisible(!isFormVisible);
               setIsEditMode(false); // Ensure we're not in edit mode when adding new item
             }}
-            className={`bg-blue-500 text-white px-4 py-2 rounded-full ${
+            className={`bg-blue-500 text-white px-4 py-2 mt-20 rounded-full ${
               isFormVisible ? "h-10 w-10" : "h-16 w-16"
             }`}
+            style={{ position: 'fixed', top: '1rem', right: '1rem' }} // Make button fixed on mobile
           >
             {isFormVisible ? "-" : "+"}
           </button>
         </div>
 
         {isFormVisible && (
-          <div className="p-3 mb-4 mt-4 bg-white rounded shadow">
+          <div className="p-3 mb-4 bg-white rounded shadow">
             <h3 className="mb-2 text-xl text-gray-800 border">
               {isEditMode ? "Edit Material" : "Add New Material"}
             </h3>
@@ -370,7 +389,7 @@ export default function Inventory() {
           </div>
         )}
 
-        <div className="p-3 mb-4 bg-white rounded shadow">
+        <div className="p-3 mb-4 mt-20 bg-white rounded shadow">
           <input
             type="text"
             placeholder="Search by name or description"
@@ -490,13 +509,25 @@ export default function Inventory() {
                         {material.location}
                       </td>
                       <td className="px-4 py-2 border border-black">
-                        <button
-                          className="px-2 py-1 text-white bg-blue-500 rounded"
-                          onClick={() => handleEdit(material)}
-                        >
-                          Edit
-                        </button>
-                      </td>
+  <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 md:justify-between">
+    <button
+      className="px-2 py-1 text-white bg-blue-500 rounded"
+      onClick={() => handleEdit(material)}
+    >
+      Edit
+    </button>
+    <button
+      className="px-2 py-1 text-white bg-red-500 rounded"
+      onClick={() => handleDelete(material.itemID)}
+    >
+      Delete
+    </button>
+  </div>
+</td>
+
+
+
+
                     </tr>
                   ))}
                 </tbody>
@@ -505,15 +536,6 @@ export default function Inventory() {
           ) : (
             <div className="mt-4 text-center text-gray-700">No items found</div>
           )}
-
-          <div className="flex justify-between mt-4">
-            <button className="px-4 py-2 text-white bg-blue-500 rounded">
-              Check Out
-            </button>
-            <button className="px-4 py-2 text-white bg-blue-500 rounded">
-              Order More
-            </button>
-          </div>
         </div>
       </div>
     </div>
