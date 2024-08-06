@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await axios.post("http://localhost:2000/auth/login", {
+      const response = await axios.post("https://backend-uas6.onrender.com/auth/login", {
         email,
         password,
       });
@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (email: string, password: string) => {
     try {
-      await axios.post("http://localhost:2000/auth/register", {
+      await axios.post("https://backend-uas6.onrender.com/auth/register", {
         email,
         password,
       });
