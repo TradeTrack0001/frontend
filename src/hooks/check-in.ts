@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "http://localhost:2000/api/";
+const baseUrl = "https://backend-uas6.onrender.com/api/";
 
 
 type CheckInItem = {

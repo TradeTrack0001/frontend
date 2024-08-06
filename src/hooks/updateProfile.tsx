@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:2000/profile/";
+const baseUrl = "https://backend-uas6.onrender.com/profile/";
 
 export const updateProfile = async (authToken: any, data: any) => {
   console.log("hi");

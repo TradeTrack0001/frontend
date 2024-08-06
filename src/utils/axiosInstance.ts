@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:2000', // Replace with your actual API base URL
+    baseURL: 'https://backend-uas6.onrender.com', // Replace with your actual API base URL
 });
 
 axiosInstance.interceptors.request.use((config) => {
