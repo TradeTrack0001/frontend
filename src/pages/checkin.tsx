@@ -5,6 +5,8 @@ import { useWorkspace } from "../hooks/workspace";
 import { AuthContext } from "../hooks/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExpandArrowsAlt, faCheckCircle, faWrench, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 // Define the material type
 type Material = {
@@ -317,77 +319,68 @@ export default function Checkin() {
             </div>
           )}
 
-          <div className="mt-4 mb-4">
+          <div className="p-3 mb-4 mt-20 bg-white rounded shadow">
             <input
               type="text"
-              name="searchTerm"
+              placeholder="Search by name or description"
               value={searchTerm}
               onChange={handleChange}
-              placeholder="Search by name or description"
-              className="w-full p-2 mb-4 border rounded"
+              className="w-full p-2 border rounded"
             />
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="mb-4">
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faExpandArrowsAlt} className="mr-2 text-blue-500" />
                 <select
                   name="sizeFilter"
                   value={sizeFilter}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="p-2 border rounded"
                 >
                   <option value="">All Sizes</option>
-                  {Array.from(new Set(materials.map((material) => material.itemSize))).map(
-                    (size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    )
-                  )}
+                  {Array.from(new Set(materials.map((material) => material.itemSize))).map((size) => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
                 </select>
               </div>
-              <div className="mb-4">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-blue-500" />
                 <select
                   name="statusFilter"
                   value={statusFilter}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="p-2 border rounded"
                 >
                   <option value="">All Status</option>
                   <option value="Available">Available</option>
                   <option value="Checked Out">Checked Out</option>
                 </select>
               </div>
-              <div className="mb-4">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faWrench} className="mr-2 text-blue-500" />
                 <select
                   name="typeFilter"
                   value={typeFilter}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="p-2 border rounded"
                 >
                   <option value="">All Types</option>
-                  {Array.from(new Set(materials.map((material) => material.type))).map(
-                    (type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    )
-                  )}
+                  {Array.from(new Set(materials.map((material) => material.type))).map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
                 </select>
               </div>
-              <div className="mb-4">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-blue-500" />
                 <select
                   name="locationFilter"
                   value={locationFilter}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="p-2 border rounded"
                 >
                   <option value="">All Locations</option>
-                  {Array.from(new Set(materials.map((material) => material.location))).map(
-                    (location) => (
-                      <option key={location} value={location}>
-                        {location}
-                      </option>
-                    )
-                  )}
+                  {Array.from(new Set(materials.map((material) => material.location))).map((location) => (
+                    <option key={location} value={location}>{location}</option>
+                  ))}
                 </select>
               </div>
             </div>

@@ -399,7 +399,7 @@ export default function Inventory() {
           />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex items-center">
-              <FontAwesomeIcon icon={faExpandArrowsAlt} className="mr-2" />
+              <FontAwesomeIcon icon={faExpandArrowsAlt} className="mr-2 text-blue-500" /> {/* Add text-blue-500 class */}
               <select
                 name="filterSize"
                 value={filterSize}
@@ -414,7 +414,7 @@ export default function Inventory() {
               </select>
             </div>
             <div className="flex items-center">
-              <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+              <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-blue-500" /> {/* Add text-blue-500 class */}
               <select
                 name="filterStatus"
                 value={filterStatus}
@@ -427,7 +427,7 @@ export default function Inventory() {
               </select>
             </div>
             <div className="flex items-center">
-              <FontAwesomeIcon icon={faWrench} className="mr-2" />
+              <FontAwesomeIcon icon={faWrench} className="mr-2 text-blue-500" /> {/* Add text-blue-500 class */}
               <select
                 name="filterType"
                 value={filterType}
@@ -442,7 +442,7 @@ export default function Inventory() {
               </select>
             </div>
             <div className="flex items-center">
-              <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+              <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-blue-500" /> {/* Add text-blue-500 class */}
               <select
                 name="filterLocation"
                 value={filterLocation}
@@ -509,25 +509,21 @@ export default function Inventory() {
                         {material.location}
                       </td>
                       <td className="px-4 py-2 border border-black">
-  <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 md:justify-between">
-    <button
-      className="px-2 py-1 text-white bg-blue-500 rounded"
-      onClick={() => handleEdit(material)}
-    >
-      Edit
-    </button>
-    <button
-      className="px-2 py-1 text-white bg-red-500 rounded"
-      onClick={() => handleDelete(material.itemID)}
-    >
-      Delete
-    </button>
-  </div>
-</td>
-
-
-
-
+                        <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 md:justify-between">
+                          <button
+                            className="px-2 py-1 text-white bg-blue-500 rounded"
+                            onClick={() => handleEdit(material)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="px-2 py-1 text-white bg-red-500 rounded"
+                            onClick={() => handleDelete(material.itemID)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
