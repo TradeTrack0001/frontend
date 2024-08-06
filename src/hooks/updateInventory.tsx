@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:2000/api/";
+const baseUrl = "https://backend-uas6.onrender.com/api/";
 
 export const updateInventory = async (data: any[]) => {
     if (!Array.isArray(data)) {

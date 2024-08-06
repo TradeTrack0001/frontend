@@ -68,7 +68,7 @@ export default function Checkout() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            "http://localhost:2000/auth/protected",
+            " https://backend-uas6.onrender.com/auth/protected",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -93,7 +93,7 @@ export default function Checkout() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            "http://localhost:2000/workspace/current_workspace",
+            " https://backend-uas6.onrender.com/workspace/current_workspace",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,

@@ -41,7 +41,7 @@ export const WorkspaceProvider: React.FC<MyProviderProps> = ({ children }) => {
     null
   );
   const { auth } = useAuth();
-  const baseUrl = "http://localhost:2000";
+  const baseUrl = "https://backend-uas6.onrender.com/api";
 
   async function getInventory() {
     const inventoryList: any = [];

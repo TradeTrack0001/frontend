@@ -27,7 +27,7 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
       try {
 
         const response = await axios.get(
-          "http://localhost:2000/profile/get_user",
+          "https://backend-uas6.onrender.com/profile/get_user",
           {
             headers: {
               Authorization: `Bearer ${auth.token}`,

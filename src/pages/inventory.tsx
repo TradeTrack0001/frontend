@@ -40,7 +40,7 @@ export default function Inventory() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            "http://localhost:2000/auth/protected",
+            "https://backend-uas6.onrender.com/auth/protected",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -66,7 +66,7 @@ export default function Inventory() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            "http://localhost:2000/workspace/current_workspace",
+            "https://backend-uas6.onrender.com/workspace/current_workspace",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -193,7 +193,7 @@ export default function Inventory() {
         toast.success("Material updated successfully");
       } else {
         response = await axios.post(
-          "http://localhost:2000/workspace/add_inventory",
+          "https://backend-uas6.onrender.com/workspace/add_inventory",
           newMaterial,
           {
             headers: {
