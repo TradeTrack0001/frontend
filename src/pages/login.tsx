@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent, FormEvent, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../hooks/AuthContext";
 import toast from "react-hot-toast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -47,7 +49,6 @@ const Login: React.FC = () => {
           navigate("/workspace");
           toast.success("Login successful");
         } else {
-          // Add your registration logic here
           if (password !== confirmPassword) {
             toast.error("Passwords do not match");
             return;
@@ -104,17 +105,15 @@ const Login: React.FC = () => {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-0 px-3 py-1 text-sm text-gray-600 focus:outline-none"
+                    className="absolute inset-y-0 right-0 flex items-center px-3 py-1 text-sm text-gray-600 focus:outline-none"
                   >
-                    {isPasswordVisible ? "Hide" : "Show"}
+                    <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
                   </button>
                 </div>
               </div>
               {!isLoginForm && (
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Confirm Password
-                  </label>
+                  <label className="block text-gray-700">Confirm Password</label>
                   <div className="relative w-full">
                     <input
                       type={isPasswordVisible ? "text" : "password"}
@@ -125,9 +124,9 @@ const Login: React.FC = () => {
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
-                      className="absolute inset-y-0 right-0 px-3 py-1 text-sm text-gray-600 focus:outline-none"
+                      className="absolute inset-y-0 right-0 flex items-center px-3 py-1 text-sm text-gray-600 focus:outline-none"
                     >
-                      {isPasswordVisible ? "Hide" : "Show"}
+                      <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
                     </button>
                   </div>
                 </div>

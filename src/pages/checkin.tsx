@@ -54,6 +54,7 @@ export default function Checkin() {
     checkInDate: "",
   });
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState("");
@@ -66,7 +67,7 @@ export default function Checkin() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            " https://backend-uas6.onrender.com/auth/protected",
+            "https://backend-uas6.onrender.com/auth/protected",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -91,7 +92,7 @@ export default function Checkin() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            " https://backend-uas6.onrender.com/workspace/current_workspace",
+            "https://backend-uas6.onrender.com/workspace/current_workspace",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -162,7 +163,16 @@ export default function Checkin() {
 
   const handleCheckIn = (e: FormEvent) => {
     e.preventDefault();
-    setCheckedInItems((prev) => [...prev, newCheckIn]);
+    if (isEditMode) {
+      setCheckedInItems((prev) =>
+        prev.map((item) =>
+          item.id === newCheckIn.id ? newCheckIn : item
+        )
+      );
+      setIsEditMode(false);
+    } else {
+      setCheckedInItems((prev) => [...prev, newCheckIn]);
+    }
     setNewCheckIn({
       id: "",
       name: "",
@@ -173,6 +183,15 @@ export default function Checkin() {
       employeeName: "",
       checkInDate: "",
     });
+  };
+
+  const handleEdit = (item: CheckInItem) => {
+    setNewCheckIn(item);
+    setIsEditMode(true);
+  };
+
+  const handleCancel = () => {
+    setCheckedInItems([]);
   };
 
   const handleInventoryItemClick = (material: Material) => {
@@ -200,7 +219,7 @@ export default function Checkin() {
       return material;
     });
 
-    useCheckin(checkedInItems);
+    await useCheckin(checkedInItems);
 
     setCheckedInItems([]);
     setMaterials(updatedMaterials);
@@ -283,7 +302,7 @@ export default function Checkin() {
               onClick={handleCheckIn}
               className="px-4 py-2 text-white bg-blue-500 rounded"
             >
-              Check In Material
+              {isEditMode ? "Update Material" : "Check In Material"}
             </button>
           </div>
 
@@ -297,6 +316,7 @@ export default function Checkin() {
                       <th className="px-4 py-2 border border-black">Name</th>
                       <th className="hidden px-4 py-2 border border-black md:table-cell">Location</th>
                       <th className="px-4 py-2 border border-black">Check In Quantity</th>
+                      <th className="px-4 py-2 border border-black">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -305,16 +325,42 @@ export default function Checkin() {
                         <td className="px-4 py-2 border-b">{item.name}</td>
                         <td className="hidden px-4 py-2 border-b md:table-cell">{item.location}</td>
                         <td className="px-4 py-2 border-b">{item.checkInQuantity}</td>
+                        <td className="px-4 py-2 border-b flex justify-between">
+                          <button
+                            className="px-2 py-1 text-white bg-blue-500 rounded"
+                            onClick={() => handleEdit(item)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="px-2 py-1 text-white bg-red-500 rounded"
+                            onClick={() =>
+                              setCheckedInItems((prev) =>
+                                prev.filter((_, i) => i !== index)
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <button
-                  onClick={confirmCheckInItems}
-                  className="px-4 py-2 text-white bg-blue-500 rounded mt-4"
-                >
-                  Confirm Check-In Items
-                </button>
+                <div className="flex mt-4">
+                  <button
+                    onClick={confirmCheckInItems}
+                    className="px-4 py-2 text-white bg-blue-500 rounded mr-10"
+                  >
+                    Confirm Check-In Items
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="px-4 py-2 text-white bg-red-500 rounded ml-10"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}

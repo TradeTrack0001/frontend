@@ -267,9 +267,16 @@ export default function Inventory() {
 
   if (!workspaceId) {
     return (
-      <div>
+      <div className="flex min-h-screen">
         <Sidebar />
-        <div>Workspace not found, create or join a workspace to get started</div>
+        <div className="flex-1 p-5 pt-16 md:ml-64">
+          <div className="p-3 bg-white rounded shadow">
+            <h2 className="mb-4 text-2xl text-gray-800">Workspace Not Found</h2>
+            <p className="text-gray-700">
+              Create or join a workspace to get started.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }

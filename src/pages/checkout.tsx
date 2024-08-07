@@ -58,6 +58,7 @@ export default function Checkout() {
     dueOn: "",
   });
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState("");
@@ -70,7 +71,7 @@ export default function Checkout() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            " https://backend-uas6.onrender.com/auth/protected",
+            "https://backend-uas6.onrender.com/auth/protected",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -95,7 +96,7 @@ export default function Checkout() {
       if (auth && auth.token) {
         try {
           const response = await axios.get(
-            " https://backend-uas6.onrender.com/workspace/current_workspace",
+            "https://backend-uas6.onrender.com/workspace/current_workspace",
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -166,7 +167,16 @@ export default function Checkout() {
 
   const handleCheckOut = (e: FormEvent) => {
     e.preventDefault();
-    setCheckedOutItems((prev) => [...prev, newCheckOut]);
+    if (isEditMode) {
+      setCheckedOutItems((prev) =>
+        prev.map((item) =>
+          item.id === newCheckOut.id ? newCheckOut : item
+        )
+      );
+      setIsEditMode(false);
+    } else {
+      setCheckedOutItems((prev) => [...prev, newCheckOut]);
+    }
     setNewCheckOut({
       id: "",
       name: "",
@@ -179,6 +189,15 @@ export default function Checkout() {
       duration: "",
       dueOn: "",
     });
+  };
+
+  const handleEdit = (item: CheckOutItem) => {
+    setNewCheckOut(item);
+    setIsEditMode(true);
+  };
+
+  const handleCancel = () => {
+    setCheckedOutItems([]);
   };
 
   const handleInventoryItemClick = (material: Material) => {
@@ -290,7 +309,7 @@ export default function Checkout() {
               onClick={handleCheckOut}
               className="px-4 py-2 text-white bg-blue-500 rounded"
             >
-              Check Out Material
+              {isEditMode ? "Update Material" : "Check Out Material"}
             </button>
           </div>
 
@@ -304,6 +323,7 @@ export default function Checkout() {
                       <th className="px-4 py-2 border border-black">Name</th>
                       <th className="hidden px-4 py-2 border border-black md:table-cell">Location</th>
                       <th className="px-4 py-2 border border-black">Check Out Quantity</th>
+                      <th className="px-4 py-2 border border-black">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -312,16 +332,42 @@ export default function Checkout() {
                         <td className="px-4 py-2 border-b">{item.name}</td>
                         <td className="hidden px-4 py-2 border-b md:table-cell">{item.location}</td>
                         <td className="px-4 py-2 border-b">{item.checkOutQuantity}</td>
+                        <td className="px-4 py-2 border-b flex justify-between">
+                          <button
+                            className="px-2 py-1 text-white bg-blue-500 rounded"
+                            onClick={() => handleEdit(item)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="px-2 py-1 text-white bg-red-500 rounded"
+                            onClick={() =>
+                              setCheckedOutItems((prev) =>
+                                prev.filter((_, i) => i !== index)
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <button
-                  onClick={confirmCheckOutItems}
-                  className="px-4 py-2 text-white bg-blue-500 rounded mt-4"
-                >
-                  Confirm Check-Out Items
-                </button>
+                <div className="flex mt-4">
+                  <button
+                    onClick={confirmCheckOutItems}
+                    className="px-4 py-2 text-white bg-blue-500 rounded mr-10"
+                  >
+                    Confirm Check-Out Items
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="px-4 py-2 text-white bg-red-500 rounded ml-10"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
