@@ -12,7 +12,6 @@ type Workspace = {
 };
 
 export default function WorkspacePage() {
-  const navigate = useNavigate();
   const { auth } = useAuth();
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
@@ -20,7 +19,7 @@ export default function WorkspacePage() {
     null
   );
   const [newUserName, setNewUserName] = useState("");
-  const { currentWorkspace, setCurrentWorkspace } = useWorkspace();
+  const { setCurrentWorkspace } = useWorkspace();
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<number | null>(
     null
   );

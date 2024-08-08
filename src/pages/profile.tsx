@@ -21,7 +21,7 @@ type OrderEmail = {
 
 export default function Profile() {
   const { fetchProfile } = useProfile();
-  const {message} = useProfile();
+  const { message } = useProfile();
   const [employee, setEmployee] = useState<Employee>({
     id: "",
     name: "",
@@ -31,7 +31,7 @@ export default function Profile() {
     companyEmail: "", // Set to true for development
   });
 
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees] = useState<Employee[]>([]);
   const [orderEmails, setOrderEmails] = useState<OrderEmail[]>([]);
   const [newOrderEmail, setNewOrderEmail] = useState<OrderEmail>({
     name: "",
@@ -78,7 +78,6 @@ export default function Profile() {
       }
     }
 
-
     async function fetchEmployees() {
       try {
         // const response = await axios.get("/api/employees"); // Adjust the API endpoint as needed
@@ -120,7 +119,7 @@ export default function Profile() {
       // await axios.put("/api/employee", employee); // Adjust the API endpoint as needed
       // toast("Profile updated successfully");
 
-      await updateProfile( auth?.token,employee );
+      await updateProfile(auth?.token, employee);
       toast("Profile updated successfully");
     } catch (error) {
       console.error("Error updating profile:", error);

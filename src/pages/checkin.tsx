@@ -6,7 +6,12 @@ import { AuthContext } from "../hooks/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpandArrowsAlt, faCheckCircle, faWrench, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faExpandArrowsAlt,
+  faCheckCircle,
+  faWrench,
+  faMapMarkerAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Define the material type
 type Material = {
@@ -100,7 +105,10 @@ export default function Checkin() {
             }
           );
           setWorkspaceId(response.data.currentWorkspace?.id || null);
-          console.log("Current workspace ID:", response.data.currentWorkspace?.id);
+          console.log(
+            "Current workspace ID:",
+            response.data.currentWorkspace?.id
+          );
         } catch (error) {
           console.error("Error fetching current workspace", error);
           navigate("/workspace");
@@ -122,7 +130,9 @@ export default function Checkin() {
 
   const fetchMaterials = async (workspaceId: string) => {
     const data = await getInventory();
+    // @ts-ignore
     if (data && data.inventoryItems) {
+      // @ts-ignore
       const formattedData = data.inventoryItems.map((item: any) => ({
         itemID: item.itemID,
         itemName: item.itemName,
@@ -141,7 +151,9 @@ export default function Checkin() {
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (name === "searchTerm") {
       setSearchTerm(value);
@@ -165,9 +177,7 @@ export default function Checkin() {
     e.preventDefault();
     if (isEditMode) {
       setCheckedInItems((prev) =>
-        prev.map((item) =>
-          item.id === newCheckIn.id ? newCheckIn : item
-        )
+        prev.map((item) => (item.id === newCheckIn.id ? newCheckIn : item))
       );
       setIsEditMode(false);
     } else {
@@ -228,9 +238,14 @@ export default function Checkin() {
   const filteredMaterials = materials.filter((material) => {
     return (
       (material.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        material.itemDescription.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        material.itemDescription
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) &&
       (sizeFilter === "" || material.itemSize === sizeFilter) &&
-      (statusFilter === "" || (statusFilter === "Available" ? material.itemStatus : !material.itemStatus)) &&
+      (statusFilter === "" ||
+        (statusFilter === "Available"
+          ? material.itemStatus
+          : !material.itemStatus)) &&
       (typeFilter === "" || material.type === typeFilter) &&
       (locationFilter === "" || material.location === locationFilter)
     );
@@ -259,10 +274,13 @@ export default function Checkin() {
         <div className="p-3 mb-4 bg-white rounded shadow">
           <h2 className="mb-4 text-2xl text-gray-800">Check In Details</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="grid grid-cols-1 gap-4">
               <h3 className="mb-2 text-xl text-gray-800">Material Details</h3>
-              <form onSubmit={handleCheckIn} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form
+                onSubmit={handleCheckIn}
+                className="grid grid-cols-1 gap-4 md:grid-cols-2"
+              >
                 <div className="mb-4">
                   <label className="block text-gray-700">Name</label>
                   <input
@@ -284,7 +302,9 @@ export default function Checkin() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Check In Quantity</label>
+                  <label className="block text-gray-700">
+                    Check In Quantity
+                  </label>
                   <input
                     type="number"
                     name="checkInQuantity"
@@ -314,8 +334,12 @@ export default function Checkin() {
                   <thead>
                     <tr className="bg-gray-100">
                       <th className="px-4 py-2 border border-black">Name</th>
-                      <th className="hidden px-4 py-2 border border-black md:table-cell">Location</th>
-                      <th className="px-4 py-2 border border-black">Check In Quantity</th>
+                      <th className="hidden px-4 py-2 border border-black md:table-cell">
+                        Location
+                      </th>
+                      <th className="px-4 py-2 border border-black">
+                        Check In Quantity
+                      </th>
                       <th className="px-4 py-2 border border-black">Actions</th>
                     </tr>
                   </thead>
@@ -323,9 +347,13 @@ export default function Checkin() {
                     {checkedInItems.map((item, index) => (
                       <tr key={index}>
                         <td className="px-4 py-2 border-b">{item.name}</td>
-                        <td className="hidden px-4 py-2 border-b md:table-cell">{item.location}</td>
-                        <td className="px-4 py-2 border-b">{item.checkInQuantity}</td>
-                        <td className="px-4 py-2 border-b flex justify-between">
+                        <td className="hidden px-4 py-2 border-b md:table-cell">
+                          {item.location}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {item.checkInQuantity}
+                        </td>
+                        <td className="flex justify-between px-4 py-2 border-b">
                           <button
                             className="px-2 py-1 text-white bg-blue-500 rounded"
                             onClick={() => handleEdit(item)}
@@ -350,13 +378,13 @@ export default function Checkin() {
                 <div className="flex mt-4">
                   <button
                     onClick={confirmCheckInItems}
-                    className="px-4 py-2 text-white bg-blue-500 rounded mr-10"
+                    className="px-4 py-2 mr-10 text-white bg-blue-500 rounded"
                   >
                     Confirm Check-In Items
                   </button>
                   <button
                     onClick={handleCancel}
-                    className="px-4 py-2 text-white bg-red-500 rounded ml-10"
+                    className="px-4 py-2 ml-10 text-white bg-red-500 rounded"
                   >
                     Cancel
                   </button>
@@ -365,7 +393,7 @@ export default function Checkin() {
             </div>
           )}
 
-          <div className="p-3 mb-4 mt-20 bg-white rounded shadow">
+          <div className="p-3 mt-20 mb-4 bg-white rounded shadow">
             <input
               type="text"
               placeholder="Search by name or description"
@@ -373,9 +401,12 @@ export default function Checkin() {
               onChange={handleChange}
               className="w-full p-2 border rounded"
             />
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-4">
               <div className="flex items-center">
-                <FontAwesomeIcon icon={faExpandArrowsAlt} className="mr-2 text-blue-500" />
+                <FontAwesomeIcon
+                  icon={faExpandArrowsAlt}
+                  className="mr-2 text-blue-500"
+                />
                 <select
                   name="sizeFilter"
                   value={sizeFilter}
@@ -383,13 +414,20 @@ export default function Checkin() {
                   className="p-2 border rounded"
                 >
                   <option value="">All Sizes</option>
-                  {Array.from(new Set(materials.map((material) => material.itemSize))).map((size) => (
-                    <option key={size} value={size}>{size}</option>
+                  {Array.from(
+                    new Set(materials.map((material) => material.itemSize))
+                  ).map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="flex items-center">
-                <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-blue-500" />
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className="mr-2 text-blue-500"
+                />
                 <select
                   name="statusFilter"
                   value={statusFilter}
@@ -402,7 +440,10 @@ export default function Checkin() {
                 </select>
               </div>
               <div className="flex items-center">
-                <FontAwesomeIcon icon={faWrench} className="mr-2 text-blue-500" />
+                <FontAwesomeIcon
+                  icon={faWrench}
+                  className="mr-2 text-blue-500"
+                />
                 <select
                   name="typeFilter"
                   value={typeFilter}
@@ -410,13 +451,20 @@ export default function Checkin() {
                   className="p-2 border rounded"
                 >
                   <option value="">All Types</option>
-                  {Array.from(new Set(materials.map((material) => material.type))).map((type) => (
-                    <option key={type} value={type}>{type}</option>
+                  {Array.from(
+                    new Set(materials.map((material) => material.type))
+                  ).map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="flex items-center">
-                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-blue-500" />
+                <FontAwesomeIcon
+                  icon={faMapMarkerAlt}
+                  className="mr-2 text-blue-500"
+                />
                 <select
                   name="locationFilter"
                   value={locationFilter}
@@ -424,8 +472,12 @@ export default function Checkin() {
                   className="p-2 border rounded"
                 >
                   <option value="">All Locations</option>
-                  {Array.from(new Set(materials.map((material) => material.location))).map((location) => (
-                    <option key={location} value={location}>{location}</option>
+                  {Array.from(
+                    new Set(materials.map((material) => material.location))
+                  ).map((location) => (
+                    <option key={location} value={location}>
+                      {location}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -438,28 +490,47 @@ export default function Checkin() {
               <thead>
                 <tr className="bg-gray-100">
                   <th className="px-4 py-2 border border-black">Name</th>
-                  <th className="hidden px-4 py-2 border border-black md:table-cell">Description</th>
+                  <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    Description
+                  </th>
                   <th className="px-4 py-2 border border-black">Quantity</th>
-                  <th className="hidden px-4 py-2 border border-black md:table-cell">Status</th>
+                  <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    Status
+                  </th>
                   <th className="px-4 py-2 border border-black">Size</th>
-                  <th className="hidden px-4 py-2 border border-black md:table-cell">Type</th>
-                  <th className="hidden px-4 py-2 border border-black md:table-cell">Location</th>
+                  <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    Type
+                  </th>
+                  <th className="hidden px-4 py-2 border border-black md:table-cell">
+                    Location
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredMaterials.map((material) => (
                   <tr
+                    // @ts-ignore
                     key={material.itemID}
                     className="cursor-pointer"
                     onClick={() => handleInventoryItemClick(material)}
                   >
                     <td className="px-4 py-2 border-b">{material.itemName}</td>
-                    <td className="hidden px-4 py-2 border-b md:table-cell">{material.itemDescription}</td>
-                    <td className="px-4 py-2 border-b">{material.itemQuantity}</td>
-                    <td className="hidden px-4 py-2 border-b md:table-cell">{material.itemStatus ? "Available" : "Checked Out"}</td>
+                    <td className="hidden px-4 py-2 border-b md:table-cell">
+                      {material.itemDescription}
+                    </td>
+                    <td className="px-4 py-2 border-b">
+                      {material.itemQuantity}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b md:table-cell">
+                      {material.itemStatus ? "Available" : "Checked Out"}
+                    </td>
                     <td className="px-4 py-2 border-b">{material.itemSize}</td>
-                    <td className="hidden px-4 py-2 border-b md:table-cell">{material.type}</td>
-                    <td className="hidden px-4 py-2 border-b md:table-cell">{material.location}</td>
+                    <td className="hidden px-4 py-2 border-b md:table-cell">
+                      {material.type}
+                    </td>
+                    <td className="hidden px-4 py-2 border-b md:table-cell">
+                      {material.location}
+                    </td>
                   </tr>
                 ))}
               </tbody>

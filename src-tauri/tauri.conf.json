@@ -1,7 +1,7 @@
 {
   "productName": "trade-track-frontend-tauri-beta",
-  "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "version": "0.1.0",
+  "identifier": "com.tradetrack.dev",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",

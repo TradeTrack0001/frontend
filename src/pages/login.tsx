@@ -71,7 +71,7 @@ const Login: React.FC = () => {
         <div className="z-10 flex flex-col w-full max-w-3xl overflow-hidden bg-white rounded-lg shadow-2xl lg:flex-row">
           <div className="flex flex-col items-center justify-center p-8 bg-blue-800 lg:w-1/2">
             <img
-              src="src/assets/TradeTrackLogo.png"
+              src="/assets/TradeTrackLogo.png"
               alt="Company Logo"
               className="w-32 h-32 mb-4"
             />
@@ -107,13 +107,17 @@ const Login: React.FC = () => {
                     onClick={togglePasswordVisibility}
                     className="absolute inset-y-0 right-0 flex items-center px-3 py-1 text-sm text-gray-600 focus:outline-none"
                   >
-                    <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
+                    <FontAwesomeIcon
+                      icon={isPasswordVisible ? faEyeSlash : faEye}
+                    />
                   </button>
                 </div>
               </div>
               {!isLoginForm && (
                 <div className="mb-4">
-                  <label className="block text-gray-700">Confirm Password</label>
+                  <label className="block text-gray-700">
+                    Confirm Password
+                  </label>
                   <div className="relative w-full">
                     <input
                       type={isPasswordVisible ? "text" : "password"}
@@ -126,7 +130,9 @@ const Login: React.FC = () => {
                       onClick={togglePasswordVisibility}
                       className="absolute inset-y-0 right-0 flex items-center px-3 py-1 text-sm text-gray-600 focus:outline-none"
                     >
-                      <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
+                      <FontAwesomeIcon
+                        icon={isPasswordVisible ? faEyeSlash : faEye}
+                      />
                     </button>
                   </div>
                 </div>

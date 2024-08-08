@@ -1,3 +1,3 @@
-package com.tauri.dev
+package com.tradetrack.dev
 
 class MainActivity : TauriActivity()
