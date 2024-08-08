@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Your configured axios instance
+import { useAuth } from "../hooks/AuthContext";
+
 
 const AcceptInvitePage: React.FC = () => {
+  const {auth} = useAuth();
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -22,15 +25,16 @@ const AcceptInvitePage: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "https://backend-uas6.onrender.com/accept-invite",
-        { token }
+                "https://backend-uas6.onrender.com/workspace/accept-invite",
+        { token },
+        { headers: { Authorization: `Bearer ${auth?.token}` } }
       );
       alert(response.data.message);
       navigate("/"); // Redirect to home or another appropriate page
     } catch (error) {
       console.error("Error accepting invitation:", error);
       setError(
-        "Failed to accept the invitation. The token might be invalid or expired."
+        `Failed to accept the invitation. The token might be invalid or expired.${error}`
       );
     }
   };
