@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./hooks/AuthContext";
 import { ProfileProvider } from "./hooks/proflie";
 import { WorkspaceProvider } from "./hooks/workspace";
+import AcceptInvitePage from "./pages/accept-invite";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route path="/checkin" element={<Checkin />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/workspace" element={<Workspace />} />
+              <Route path="/accept-invite" element={<AcceptInvitePage />} />
             </Routes>
           </ProfileProvider>
         </WorkspaceProvider>
